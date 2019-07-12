@@ -16,12 +16,20 @@ export default class ListNotes extends Component <Props>{
         this.setState({ notes: nextProps.notes });
     }
 
+    goToScreenUpdateNote = () => {
+        if (!this.state.note || !this.props.navigation)
+            return;
+
+        const { navigate } = this.props.navigation;
+        navigate('UpdateNote', { note: this.state.note.clone(), event: this.props.event })
+    }
+
     renderListNotes = () => {
         let result;
         result = this.state.notes.map((note: any) => {
             if (note) {
-                let n = new Note(note['noteId'], note['noteDetail']);
-                return <NoteView key={n.noteId} note={n} event={this.props.event} />
+                let n = new Note(note['noteId'], note['noteDetail'], note['noteTitle']);
+                return <NoteView key={n.noteId} note={n} event={this.props.event} onPress={this.goToScreenUpdateNote}/>
             }
         });
         return result;

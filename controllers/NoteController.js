@@ -2,7 +2,7 @@ import Note from '../models/Note';
 import Message from '../models/Message';
 
 const SQLite = require('react-native-sqlite-storage');
-const sqlite = SQLite.openDatabase({ name: 'note-db', createFromLocation: '~database/note-db.sqlite' })
+const sqlite = SQLite.openDatabase({ name: 'notes-db', createFromLocation: '~database/notes-db.sqlite' })
 
 /**
  * @param {*} note
@@ -18,7 +18,7 @@ export const createNote = (note: Note) => {
         }
 
         sqlite.transaction((tx) => {
-            tx.executeSql('INSERT INTO Note(NoteDetail) VALUES (?)', [note.noteDetail], (tx, results) => {
+            tx.executeSql('INSERT INTO Notes(NoteDetail,NoteTitle) VALUES (?,?)', [note.noteDetail,note.noteTitle], (tx, results) => {
                 if (results.rowsAffected > 0) {
                     msg.result = true;
                     msg.message = 'Create new note successfully!';
@@ -44,10 +44,10 @@ export const getAllNotes = () => {
         let msg = new Message();
         msg.result = [];
         sqlite.transaction((tx) => {
-            tx.executeSql('SELECT * FROM Note', [], (tx, results) => {
+            tx.executeSql('SELECT * FROM Notes', [], (tx, results) => {
                 for (let i = 0; i < results.rows.length; i++) {
                     let item = results.rows.item(i);
-                    let note = new Note(item.NoteId, item.NoteDetail);
+                    let note = new Note(item.NoteId, item.NoteDetail, item.NoteTitle);
                     msg.result.push(note);
                 }
                 msg.message = 'Get all notes successfully!';
@@ -76,7 +76,7 @@ export const deleteNote = (note: Note) => {
         }
 
         sqlite.transaction((tx) => {
-            tx.executeSql('DELETE FROM Note WHERE NoteId=?', [note.noteId], (tx, results) => {
+            tx.executeSql('DELETE FROM Notes WHERE NoteId=?', [note.noteId], (tx, results) => {
                 if (results.rowsAffected > 0) {
                     msg.result = true;
                     msg.message = `Delete note with id=${note.noteId} successfully!`;
@@ -108,7 +108,7 @@ export const updateNote = (note: Note) => {
         }
 
         sqlite.transaction((tx) => {
-            tx.executeSql('UPDATE Note SET NoteDetail=? WHERE NoteId=?', [note.noteDetail, note.noteId], (tx, results) => {
+            tx.executeSql('UPDATE Notes SET NoteDetail=?,NoteTitle=? WHERE NoteId=?', [note.noteDetail, note.noteTitle, note.noteId], (tx, results) => {
                 if (results.rowsAffected > 0) {
                     msg.result = true;
                     msg.message = 'Update note successfully!';
@@ -135,10 +135,10 @@ export const getNoteById = (id: number) => {
     return new Promise((resolve, reject) => {
         let msg = new Message();
         sqlite.transaction((tx) => {
-            tx.executeSql('SELECT * FROM Note WHERE NoteId=?', [id], (tx, results) => {
+            tx.executeSql('SELECT * FROM Notes WHERE NoteId=?', [id], (tx, results) => {
                 if (results.rows.length > 0) {
                     let item = results.rows.item(0);
-                    let note = new Note(item.NoteId, item.NoteDetail);
+                    let note = new Note(item.NoteId, item.NoteDetail, item.NoteTitle);
                     msg.result = note;
                     msg.message = `Found 1 note with id=${id}`;
                 } else {

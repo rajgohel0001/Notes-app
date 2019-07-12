@@ -1,9 +1,11 @@
 import React, { Component } from 'react';
-import { StyleSheet, TextInput, Text, View, TouchableOpacity, ToastAndroid } from 'react-native';
+import { StyleSheet, TextInput, Text, View, TouchableOpacity, ToastAndroid,Dimensions } from 'react-native';
 import Note from '../models/Note';
 import { updateNote } from '../controllers/NoteController';
+import Icon from 'react-native-vector-icons/MaterialIcons';
+const {height, width} = Dimensions.get('screen');
 
-export default class UpdateNote extends Component <Props>{
+export default class UpdateNote extends Component<Props>{
     constructor(props: Props) {
         super(props);
 
@@ -11,9 +13,9 @@ export default class UpdateNote extends Component <Props>{
         if (this.props.navigation
             && this.props.navigation.state
             && this.props.navigation.state.params) {
-                note = this.props.navigation.state.params.note;
-                event = this.props.navigation.state.params.event;
-            }
+            note = this.props.navigation.state.params.note;
+            event = this.props.navigation.state.params.event;
+        }
 
         this.state = {
             note: note,
@@ -45,6 +47,17 @@ export default class UpdateNote extends Component <Props>{
         else this.setState({ note, disableButtonCreate: false, currentButtonColor: this.state.enableColor });
     }
 
+    changeTxtTitle = (text: string) => {
+        let note = this.state.note;
+        if (!note)
+            return;
+
+        note.noteTitle = text;
+        if (''.includes(this.state.note.noteTitle))
+            this.setState({ note, disableButtonCreate: true, currentButtonColor: this.state.disableColor });
+        else this.setState({ note, disableButtonCreate: false, currentButtonColor: this.state.enableColor });
+    }
+
     updateNote = () => {
         if (!this.state.note)
             return;
@@ -55,6 +68,7 @@ export default class UpdateNote extends Component <Props>{
                 if (this.state.event)
                     this.state.event.emit('onUpdateNote');
             }
+            this.props.navigation.navigate('Home');
         });
     }
 
@@ -63,23 +77,42 @@ export default class UpdateNote extends Component <Props>{
             return <Text style={styles.generalFontSize}>Invalid note!</Text>
 
         return (
-            <View style={styles.container}>
-                <View style={styles.infoContainer}>
-                    <Text style={[styles.generalFontSize, styles.text]}>Note:</Text>
-                    <TextInput
-                        style={[styles.input, styles.generalFontSize]}
-                        placeholder='note...'
-                        value={this.state.note.noteDetail}
-                        onChangeText={(text) => this.changeTxt(text)}
-                        onSubmitEditing={this.updateNote}
-                    />
+            <>
+                <View style={styles.container}>
+                    <View style={styles.infoContainer}>
+                        <Text style={[styles.generalFontSize, styles.text]}>Note:</Text>
+                        <TextInput
+                            style={[styles.input, styles.generalFontSize]}
+                            placeholder='title...'
+                            value={this.state.note.noteTitle}
+                            onChangeText={(text) => this.changeTxtTitle(text)}
+                            onSubmitEditing={this.updateNote}
+                        />
+                        <TextInput
+                            style={[styles.input, styles.generalFontSize]}
+                            placeholder='note...'
+                            value={this.state.note.noteDetail}
+                            onChangeText={(text) => this.changeTxt(text)}
+                            onSubmitEditing={this.updateNote}
+                        />
+                    </View>
+                    <TouchableOpacity
+                        style={[styles.buttonContainer, { backgroundColor: this.state.currentButtonColor }]}
+                        onPress={this.updateNote}>
+                        <Text style={[styles.buttonText, styles.generalFontSize]}>Update</Text>
+                    </TouchableOpacity>
                 </View>
-                <TouchableOpacity
-                    style={[styles.buttonContainer, { backgroundColor: this.state.currentButtonColor }]}
-                    onPress={this.updateNote}>
-                    <Text style={[styles.buttonText, styles.generalFontSize]}>Update</Text>
-                </TouchableOpacity>
-            </View>
+                <View style={{ width: width, backgroundColor: 'white', elevation: 15 ,height:60}}>
+                    <TouchableOpacity
+                        onPress={() => { this.props.navigation.navigate('AddNote', { event: this.event }) }}
+                        style={styles.floatingMenuButtonStyle}>
+                        <Icon name="more-vert"
+                            size={30}
+                            style={{ color: 'black', padding: 15 ,opacity:0.6}}
+                        />
+                    </TouchableOpacity>
+                </View>
+            </>
         );
     }
 }
@@ -122,5 +155,15 @@ const styles = StyleSheet.create({
     },
     buttonText: {
         color: 'white',
+    },
+    floatingMenuButtonStyle: {
+        alignSelf: 'flex-end',
+        position: 'absolute',
+        bottom: 0,
+        right: 0,
+        // backgroundColor: 'white',
+        height: 60,
+        // elevation: 3
+
     },
 });

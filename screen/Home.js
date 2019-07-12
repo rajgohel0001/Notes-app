@@ -38,26 +38,21 @@ export default class Home extends Component<Props>{
                 <View style={styles.container}>
                     <ListNotes notes={this.state.notes} event={this.event} />
                 </View>
-                <View style={styles.mainConatinerStyle}>
-                    <TouchableOpacity
-                        onPress={() => { this.props.navigation.navigate('AddNote', { event: this.event }) }}
-                        style={[styles.floatingMenuButtonStyle, { backgroundColor: 'lightgray', borderRadius: 40, height: 60, width: 60 }]}>
-                        <Icon name="add"
-                            size={30}
-                            style={{ color: 'black', padding: 15 }}
-                        />
-                    </TouchableOpacity>
-                </View>
+                <TouchableOpacity
+                    onPress={() => { this.props.navigation.navigate('AddNote', { event: this.event }) }}
+                    style={[styles.floatingMenuButtonStyle, { backgroundColor: 'lightgray', borderRadius: 40, height: 60, width: 60 }]}>
+                    <Icon name="add"
+                        size={30}
+                        style={{ color: 'black', padding: 15 }}
+                    />
+                </TouchableOpacity>
             </>
         )
     }
 }
 
 const styles = StyleSheet.create({
-    mainConatinerStyle: {
-        flexDirection: 'column',
-        flex: 1
-    }, floatingMenuButtonStyle: {
+    floatingMenuButtonStyle: {
         alignSelf: 'flex-end',
         position: 'absolute',
         bottom: 15,
