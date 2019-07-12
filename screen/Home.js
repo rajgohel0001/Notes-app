@@ -2,17 +2,17 @@ import React, { Component } from 'react';
 import { StyleSheet, Text, View, TouchableOpacity, ToastAndroid } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import ListNotes from './ListNotes';
+import AddNote from './AddNote';
 import { getAllNotes } from '../controllers/NoteController';
 import { EventEmitter } from 'events';
 
-class Home extends Component {
-    constructor(props) {
+export default class Home extends Component<Props>{
+    constructor(props: Props) {
         super(props);
 
         this.state = {
             notes: [],
         };
-
         this.event = new EventEmitter();
     }
 
@@ -28,25 +28,25 @@ class Home extends Component {
     }
 
     initListNotes = () => {
+        console.log('caallllll');
         getAllNotes().then(({ result, message }) => this.setState({ notes: result }));
     }
 
     render() {
         return (
             <>
-                <Text>Home Screen</Text>
+                <View style={styles.container}>
+                    <ListNotes notes={this.state.notes} event={this.event} />
+                </View>
                 <View style={styles.mainConatinerStyle}>
                     <TouchableOpacity
-                        onPress={() => this.props.navigation.navigate('AddNote')}
+                        onPress={() => { this.props.navigation.navigate('AddNote', { event: this.event }) }}
                         style={[styles.floatingMenuButtonStyle, { backgroundColor: 'lightgray', borderRadius: 40, height: 60, width: 60 }]}>
                         <Icon name="add"
                             size={30}
                             style={{ color: 'black', padding: 15 }}
                         />
                     </TouchableOpacity>
-                </View>
-                <View style={styles.container}>
-                    <ListNotes notes={this.state.notes} event={this.event}/>
                 </View>
             </>
         )
@@ -70,5 +70,3 @@ const styles = StyleSheet.create({
         backgroundColor: '#F5FCFF',
     }
 });
-
-export default Home;

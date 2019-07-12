@@ -3,8 +3,8 @@ import { StyleSheet, ScrollView } from 'react-native';
 import Note from '../models/Note';
 import NoteView from './NoteView';
 
-export default class ListNotes extends Component {
-    constructor(props){
+export default class ListNotes extends Component <Props>{
+    constructor(props: Props){
         super(props);
 
         this.state = {

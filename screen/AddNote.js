@@ -3,9 +3,9 @@ import { StyleSheet, Text, View, TextInput, TouchableOpacity, ToastAndroid, Keyb
 import Note from '../models/Note';
 import { createNote } from '../controllers/NoteController';
 
-export default class AddNote extends Component {
+export default class AddNote extends Component <Props>{
 
-    constructor(props){
+    constructor(props: Props){
         super(props);
         this.state = {
             note: new Note(),
@@ -17,17 +17,10 @@ export default class AddNote extends Component {
         };
     }
 
-    // addNote = async () => {
-    //     console.log(this.state.note);
-    //         try {
-    //           await AsyncStorage.setItem('note', this.state.note);
-    //           const value = await AsyncStorage.getItem('note');
-    //           console.log('note:----------AddNote',value);
-    //         } catch (e) {
-    //           console.log('error', e);
-    //         }
-    //     this.props.navigation.navigate('Home');
-    // }
+    componentDidMount() {
+        console.log("---------value==",this.props.navigation.state.params.event)
+    }
+    
 
     componentWillMount() {
         if (!this.state.note)
@@ -38,7 +31,7 @@ export default class AddNote extends Component {
         else this.setState({ disableButtonCreate: false, currentButtonColor: this.state.enableColor });
     }
 
-    changeName = (text: string) => {
+    changeTxt = (text: string) => {
         let note = this.state.note;
         if(!note)
             return;
@@ -54,13 +47,15 @@ export default class AddNote extends Component {
             return;
 
         createNote (this.state.note).then(({ result, message }) => {
+            console.log('========',result)
             ToastAndroid.show(message, ToastAndroid.SHORT);
-            if (result) {
+            if (result) {   
                 this.setState({ note: new Note() });
                 Keyboard.dismiss();
-                if (this.state.event)
-                    this.state.event.emit('onCreateNote');
+                // if (this.state.event)
+                this.props.navigation.state.params.event.emit('onCreateNote');
             }
+            this.props.navigation.navigate('Home');
         });
     }
 
@@ -69,7 +64,7 @@ export default class AddNote extends Component {
             <View style = {{ marginTop: 20 }}>
                 <TextInput 
                     style = { styles.container }
-                    onChangeText = {(text) => this.changeName(text)}
+                    onChangeText = {(text) => this.changeTxt(text)}
                     placeholder = {'Add Note'}
                     onSubmitEditing={this.createNote}
                 />

@@ -2,10 +2,11 @@ import React, { Component } from 'react';
 import { StyleSheet, Text, View, ToastAndroid } from 'react-native';
 // import IconMaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import Icon from 'react-native-vector-icons/MaterialIcons';
+import { withNavigation } from 'react-navigation';
 import { deleteNote } from '../controllers/NoteController';
 
-export default class NoteView extends Component {
-    constructor(props) {
+class NoteView extends Component <Props>{
+    constructor(props: Props) {
         super(props);
 
         this.state = {
@@ -45,7 +46,7 @@ export default class NoteView extends Component {
         return (
             <View style={styles.container}>
                 <Icon
-                    name='delete-circle'
+                    name='delete'
                     style={styles.icon}
                     color='red'
                     size={30}
@@ -63,6 +64,8 @@ export default class NoteView extends Component {
         );
     }
 }
+
+export default withNavigation(NoteView);
 
 const styles = StyleSheet.create({
     container: {

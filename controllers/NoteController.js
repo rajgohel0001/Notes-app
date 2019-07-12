@@ -93,3 +93,80 @@ export const deleteNote = (note: Note) => {
         })
     });
 }
+
+/**
+ * @param {*} note
+ * update note 
+ */
+export const updateNote = (note: Note) => {
+    return new Promise((resolve, reject) => {
+        let msg = new Message();
+        if (!note) {
+            msg.result = false;
+            msg.message = 'Invalid note input!';
+            resolve({ result: msg.result, message: msg.message });
+        }
+
+        sqlite.transaction((tx) => {
+            tx.executeSql('UPDATE Note SET NoteDetail=? WHERE NoteId=?', [note.noteDetail, note.noteId], (tx, results) => {
+                if (results.rowsAffected > 0) {
+                    msg.result = true;
+                    msg.message = 'Update note successfully!';
+                } else {
+                    msg.result = false;
+                    msg.message = 'Update note failed!';
+                }
+                resolve({ result: msg.result, message: msg.message });
+            }, (error) => {
+                msg.result = false;
+                msg.message = `${error.message}`;
+                resolve({ result: msg.result, message: msg.message });
+            });
+        })
+    });
+}
+
+/**
+ * 
+ * @param {*} id
+ * get user by id 
+ */
+export const getNoteById = (id: number) => {
+    return new Promise((resolve, reject) => {
+        let msg = new Message();
+        sqlite.transaction((tx) => {
+            tx.executeSql('SELECT * FROM Note WHERE NoteId=?', [id], (tx, results) => {
+                if (results.rows.length > 0) {
+                    let item = results.rows.item(0);
+                    let note = new Note(item.NoteId, item.NoteDetail);
+                    msg.result = note;
+                    msg.message = `Found 1 note with id=${id}`;
+                } else {
+                    msg.result = null;
+                    msg.message = `Not found note with id=${id}`;
+                }
+                resolve({ result: msg.result, message: msg.message });
+            }, (error) => {
+                msg.result = null;
+                msg.message = `${error.message}`;
+                resolve({ result: msg.result, message: msg.message });
+            });
+        })
+    });
+}
+
+/**
+ * 
+ * @param {*} id
+ * check user if exists
+ */
+const checkIfNoteExists = (id: number) => {
+    getNoteById(id).then(({ result, message }) => {
+        let msg = new Message();
+        msg.result = note != null;
+        if (msg.result)
+            msg.message = `Found 1 note with id=${id}`;
+        else msg.message = `Not found note with id=${id}`;
+        resolve({ result: msg.result, message: msg.message });
+    });
+}
