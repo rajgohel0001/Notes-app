@@ -65,24 +65,24 @@ export default class AddNote extends Component<Props>{
 
     render() {
         return (
-            <View style={{ marginTop: 20 }}>
+            <View style={[styles.container, {marginTop: 20}]}>
                 <TextInput
-                    style={styles.container}
+                    style={[styles.input, styles.generalFontSize]}
                     onChangeText={(text) => this.changeTxtTitle(text)}
                     placeholder={'Add Title'}
                     onSubmitEditing={this.createNote}
                 />
                 <TextInput
-                    style={styles.container}
+                    style={[styles.input, styles.generalFontSize]}
                     onChangeText={(text) => this.changeTxt(text)}
                     placeholder={'Add Note'}
                     onSubmitEditing={this.createNote}
+                    multiline = {true}
                 />
                 <TouchableOpacity
-                    style={styles.addButton}
-                    onPress={this.createNote}
-                >
-                    <Text> Add </Text>
+                    style={[styles.addButton, { backgroundColor: this.state.currentButtonColor }]}
+                    onPress={this.createNote}>
+                    <Text style={[styles.buttonText, styles.generalFontSize]}> Add </Text>
                 </TouchableOpacity>
             </View>
         )
@@ -92,19 +92,29 @@ export default class AddNote extends Component<Props>{
 const styles = StyleSheet.create({
     container: {
         backgroundColor: 'white',
-        borderWidth: 1,
-        borderColor: '#e1e0e0',
-        borderRadius: 10,
+        alignItems: 'center',
         padding: 20,
         height: 'auto',
     },
-
+    input: {
+        // height: 50,
+        width: '100%',
+        borderBottomWidth: 1,
+        borderBottomColor: '#800080',
+        marginHorizontal: 5,
+    },
+    generalFontSize: {
+        fontSize: 20,
+    },
+    buttonText: {
+        color: 'white',
+    },
     addButton: {
-        marginTop: 10,
-        backgroundColor: 'lightgray',
-        padding: 10,
-        width: 55,
-        left: 10,
-        borderRadius: 10
+        top: 10,
+        width: '50%',
+        height: 50,
+        justifyContent: 'center',
+        alignItems: 'center',
+        borderRadius: 5,
     }
 });

@@ -1,9 +1,11 @@
 import React, { Component } from 'react';
-import { StyleSheet, TextInput, Text, View, TouchableOpacity, ToastAndroid,Dimensions } from 'react-native';
+import { StyleSheet, TextInput, Text, View, TouchableOpacity, ToastAndroid, Dimensions } from 'react-native';
 import Note from '../models/Note';
 import { updateNote } from '../controllers/NoteController';
 import Icon from 'react-native-vector-icons/MaterialIcons';
-const {height, width} = Dimensions.get('screen');
+const { height, width } = Dimensions.get('screen');
+import { deleteNote } from '../controllers/NoteController';
+import RBSheet from "react-native-raw-bottom-sheet";
 
 export default class UpdateNote extends Component<Props>{
     constructor(props: Props) {
@@ -24,6 +26,7 @@ export default class UpdateNote extends Component<Props>{
             enableColor: '#800080',
             currentButtonColor: '#f488f4',
             event: event,
+            isVisible: false
         };
     }
 
@@ -34,6 +37,22 @@ export default class UpdateNote extends Component<Props>{
         if (''.includes(this.state.note.noteDetail))
             this.setState({ disableButtonCreate: true, currentButtonColor: this.state.disableColor });
         else this.setState({ disableButtonCreate: false, currentButtonColor: this.state.enableColor });
+    }
+
+    deleteNote = () => {
+        this.setState({ isVisible: true })
+        if (!this.state.note)
+            return;
+
+        deleteNote(this.state.note).then(({ result, message }) => {
+            ToastAndroid.show(message, ToastAndroid.SHORT);
+            if (result) {
+                if (this.state.event)
+                    this.state.event.emit('onDeleteNote');
+                this.RBSheet.close();
+                this.props.navigation.navigate('Home');
+            }
+        });
     }
 
     changeTxt = (text: string) => {
@@ -79,38 +98,62 @@ export default class UpdateNote extends Component<Props>{
         return (
             <>
                 <View style={styles.container}>
-                    <View style={styles.infoContainer}>
-                        <Text style={[styles.generalFontSize, styles.text]}>Note:</Text>
-                        <TextInput
-                            style={[styles.input, styles.generalFontSize]}
-                            placeholder='title...'
-                            value={this.state.note.noteTitle}
-                            onChangeText={(text) => this.changeTxtTitle(text)}
-                            onSubmitEditing={this.updateNote}
-                        />
-                        <TextInput
-                            style={[styles.input, styles.generalFontSize]}
-                            placeholder='note...'
-                            value={this.state.note.noteDetail}
-                            onChangeText={(text) => this.changeTxt(text)}
-                            onSubmitEditing={this.updateNote}
-                        />
-                    </View>
+                    <TextInput
+                        style={[styles.input, styles.generalFontSize]}
+                        placeholder='title...'
+                        value={this.state.note.noteTitle}
+                        onChangeText={(text) => this.changeTxtTitle(text)}
+                        onSubmitEditing={this.updateNote}
+                    />
+                    <TextInput
+                        style={[styles.input, styles.generalFontSize]}
+                        placeholder='note...'
+                        value={this.state.note.noteDetail}
+                        onChangeText={(text) => this.changeTxt(text)}
+                        onSubmitEditing={this.updateNote}
+                        multiline = {true}
+                    />
                     <TouchableOpacity
                         style={[styles.buttonContainer, { backgroundColor: this.state.currentButtonColor }]}
                         onPress={this.updateNote}>
                         <Text style={[styles.buttonText, styles.generalFontSize]}>Update</Text>
                     </TouchableOpacity>
                 </View>
-                <View style={{ width: width, backgroundColor: 'white', elevation: 15 ,height:60}}>
+                <View style={{ width: width, backgroundColor: 'white', elevation: 30, height: 40, bottom: 0 }}>
                     <TouchableOpacity
                         onPress={() => { this.props.navigation.navigate('AddNote', { event: this.event }) }}
                         style={styles.floatingMenuButtonStyle}>
                         <Icon name="more-vert"
                             size={30}
-                            style={{ color: 'black', padding: 15 ,opacity:0.6}}
+                            style={{ color: 'black', padding: 25, opacity: 0.6 }}
+                            onPress={() => { this.RBSheet.open(); }}
                         />
                     </TouchableOpacity>
+                </View>
+                <View>
+                    <RBSheet
+                        ref={ref => {
+                            this.RBSheet = ref;
+                        }}
+                        height={100}
+                        duration={250}
+                        customStyles={{
+                            container: {
+                                borderTopLeftRadius: 15,
+                                borderTopRightRadius: 15
+                            }
+                        }}>
+                        <View style={{ flex: 1, flexDirection: 'row', padding: 10 }}>
+                            <Icon
+                                name='delete'
+                                style={styles.icon}
+                                color='red'
+                                size={30}
+                                onPress={this.deleteNote}
+                            />
+                            <Text style={{ fontSize: 20 }} onPress={this.deleteNote}>Delete</Text>
+                        </View>
+                    </RBSheet>
                 </View>
             </>
         );
@@ -120,25 +163,22 @@ export default class UpdateNote extends Component<Props>{
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        justifyContent: 'center',
+        // justifyContent: 'center',
         alignItems: 'center',
-        backgroundColor: '#F5FCFF',
         alignSelf: 'center',
         width: '90%',
-    },
-    infoContainer: {
-        flexDirection: 'row',
-        justifyContent: 'center',
-        alignItems: 'center',
-        width: '100%',
-        marginBottom: 10,
+        flexDirection: 'column',
+        backgroundColor: 'white',
+        borderColor: '#e1e0e0',
+        padding: 20,
+        height: 'auto',
     },
     generalFontSize: {
         fontSize: 20,
     },
     input: {
-        height: 50,
-        width: '70%',
+        // height: 50,
+        width: '100%',
         borderBottomWidth: 1,
         borderBottomColor: '#800080',
         marginHorizontal: 5,
@@ -147,7 +187,8 @@ const styles = StyleSheet.create({
         width: '30%',
     },
     buttonContainer: {
-        width: '100%',
+        top: 10,
+        width: '50%',
         height: 50,
         justifyContent: 'center',
         alignItems: 'center',

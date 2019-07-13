@@ -23,23 +23,11 @@ class NoteView extends Component<Props>{
             return;
 
         const { navigate } = this.props.navigation;
-        navigate('UpdateNote', { note: this.state.note.clone(), event: this.props.event })
-    }
-
-    deleteNote = () => {
-        if (!this.state.note)
-            return;
-
-        deleteNote(this.state.note).then(({ result, message }) => {
-            ToastAndroid.show(message, ToastAndroid.SHORT);
-            if (result) {
-                if (this.props.event)
-                    this.props.event.emit('onDeleteNote');
-            }
-        });
+        navigate('UpdateNote', { note: this.state.note.item.clone(), event: this.props.event })
     }
 
     render() {
+        console.log('state note====',this.state.note);
         if (!this.state.note)
             return <Text style={styles.generalFontSize}>Invalid note!</Text>
 
@@ -47,8 +35,8 @@ class NoteView extends Component<Props>{
             <TouchableOpacity onPress={this.goToScreenUpdateNote}>
                 <View style={styles.container}>
                     <View style={{flexDirection:'column'}}>
-                        <Text style={styles.generalFontSize}>{this.state.note.noteTitle}</Text>
-                        <Text style={styles.generaldetail}>{this.state.note.noteDetail}</Text>
+                        <Text style={styles.generalFontSize}>{this.state.note.item.noteTitle}</Text>
+                        <Text style={styles.generaldetail}>{this.state.note.item.noteDetail}</Text>
                     </View>
                 </View>
             </TouchableOpacity>
@@ -82,12 +70,3 @@ const styles = StyleSheet.create({
         fontSize:15
     }
 });
-
-
-// <Icon
-//     name='delete'
-//     style={styles.icon}
-//     color='red'
-//     size={30}
-//     onPress={this.deleteNote}
-// />

@@ -40,7 +40,7 @@ export default class Home extends Component<Props>{
                 </View>
                 <TouchableOpacity
                     onPress={() => { this.props.navigation.navigate('AddNote', { event: this.event }) }}
-                    style={[styles.floatingMenuButtonStyle, { backgroundColor: 'lightgray', borderRadius: 40, height: 60, width: 60 }]}>
+                    style={[styles.floatingMenuButtonStyle, { backgroundColor: '#f488f4', borderRadius: 40, height: 60, width: 60 }]}>
                     <Icon name="add"
                         size={30}
                         style={{ color: 'black', padding: 15 }}
@@ -56,7 +56,7 @@ const styles = StyleSheet.create({
         alignSelf: 'flex-end',
         position: 'absolute',
         bottom: 15,
-        right: 15
+        right: 15,
     },
     container: {
         flex: 1,
