@@ -31,6 +31,8 @@
      +-- [scroll view for notes]
   +--/Note View 
      +-- [shows one note]
+  +--/Routes 
+     +-- [routing between screens]   
   +--/Update Note 
      +-- [update notes]        
 ```
