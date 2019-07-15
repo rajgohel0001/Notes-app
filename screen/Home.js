@@ -1,8 +1,7 @@
 import React, { Component } from 'react';
-import { StyleSheet, Text, View, TouchableOpacity, ToastAndroid } from 'react-native';
+import { StyleSheet, View, TouchableOpacity } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import ListNotes from './ListNotes';
-import AddNote from './AddNote';
 import { getAllNotes } from '../controllers/NoteController';
 import { EventEmitter } from 'events';
 
@@ -28,7 +27,6 @@ export default class Home extends Component<Props>{
     }
 
     initListNotes = () => {
-        console.log('caallllll');
         getAllNotes().then(({ result, message }) => this.setState({ notes: result }));
     }
 

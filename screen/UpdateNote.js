@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import { StyleSheet, TextInput, Text, View, TouchableOpacity, ToastAndroid, Dimensions } from 'react-native';
-import Note from '../models/Note';
 import { updateNote } from '../controllers/NoteController';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 const { height, width } = Dimensions.get('screen');
@@ -31,18 +30,22 @@ export default class UpdateNote extends Component<Props>{
     }
 
     componentWillMount() {
-        if (!this.state.note)
-            return;
+        if (!this.state.note) return;
 
-        if (''.includes(this.state.note.noteDetail))
+        if (''.includes(this.state.note.noteDetail)){
             this.setState({ disableButtonCreate: true, currentButtonColor: this.state.disableColor });
-        else this.setState({ disableButtonCreate: false, currentButtonColor: this.state.enableColor });
+        } else {
+            this.setState({ disableButtonCreate: false, currentButtonColor: this.state.enableColor });
+        }
     }
 
+    /**
+     * @param {*} note
+     * delete note
+     */
     deleteNote = () => {
         this.setState({ isVisible: true })
-        if (!this.state.note)
-            return;
+        if (!this.state.note) return;
 
         deleteNote(this.state.note).then(({ result, message }) => {
             ToastAndroid.show(message, ToastAndroid.SHORT);
@@ -55,31 +58,42 @@ export default class UpdateNote extends Component<Props>{
         });
     }
 
+    /**
+     * change note text
+     */
     changeTxt = (text: string) => {
         let note = this.state.note;
-        if (!note)
-            return;
+        if (!note) return;
 
         note.noteDetail = text;
-        if (''.includes(this.state.note.noteDetail))
+        if (''.includes(this.state.note.noteDetail)){
             this.setState({ note, disableButtonCreate: true, currentButtonColor: this.state.disableColor });
-        else this.setState({ note, disableButtonCreate: false, currentButtonColor: this.state.enableColor });
+        } else {
+            this.setState({ note, disableButtonCreate: false, currentButtonColor: this.state.enableColor });
+        }
     }
 
+    /**
+     * change note title
+     */
     changeTxtTitle = (text: string) => {
         let note = this.state.note;
-        if (!note)
-            return;
+        if (!note) return;
 
         note.noteTitle = text;
-        if (''.includes(this.state.note.noteTitle))
+        if (''.includes(this.state.note.noteTitle)){
             this.setState({ note, disableButtonCreate: true, currentButtonColor: this.state.disableColor });
-        else this.setState({ note, disableButtonCreate: false, currentButtonColor: this.state.enableColor });
+        } else {
+            this.setState({ note, disableButtonCreate: false, currentButtonColor: this.state.enableColor });
+        }
     }
 
+    /**
+     * @param {*} note
+     * update note
+     */
     updateNote = () => {
-        if (!this.state.note)
-            return;
+        if (!this.state.note) return;
 
         updateNote(this.state.note).then(({ result, message }) => {
             ToastAndroid.show(message, ToastAndroid.SHORT);
@@ -177,7 +191,6 @@ const styles = StyleSheet.create({
         fontSize: 20,
     },
     input: {
-        // height: 50,
         width: '100%',
         borderBottomWidth: 1,
         borderBottomColor: '#800080',
@@ -202,9 +215,6 @@ const styles = StyleSheet.create({
         position: 'absolute',
         bottom: 0,
         right: 0,
-        // backgroundColor: 'white',
         height: 60,
-        // elevation: 3
-
     },
 });

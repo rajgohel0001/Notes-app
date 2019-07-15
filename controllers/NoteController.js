@@ -129,7 +129,7 @@ export const updateNote = (note: Note) => {
 /**
  * 
  * @param {*} id
- * get user by id 
+ * get note by id 
  */
 export const getNoteById = (id: number) => {
     return new Promise((resolve, reject) => {
@@ -158,7 +158,7 @@ export const getNoteById = (id: number) => {
 /**
  * 
  * @param {*} id
- * check user if exists
+ * check note if exists
  */
 const checkIfNoteExists = (id: number) => {
     getNoteById(id).then(({ result, message }) => {

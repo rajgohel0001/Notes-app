@@ -1,9 +1,6 @@
 import React, { Component } from 'react';
 import { StyleSheet, Text, View, ToastAndroid, TouchableOpacity } from 'react-native';
-// import IconMaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
-import Icon from 'react-native-vector-icons/MaterialIcons';
 import { withNavigation } from 'react-navigation';
-import { deleteNote } from '../controllers/NoteController';
 
 class NoteView extends Component<Props>{
     constructor(props: Props) {
@@ -18,9 +15,11 @@ class NoteView extends Component<Props>{
         this.setState({ note: nextProps.note });
     }
 
+    /**
+     * update note
+     */
     goToScreenUpdateNote = () => {
-        if (!this.state.note || !this.props.navigation)
-            return;
+        if (!this.state.note || !this.props.navigation) return;
 
         const { navigate } = this.props.navigation;
         navigate('UpdateNote', { note: this.state.note.item.clone(), event: this.props.event })
@@ -51,7 +50,6 @@ const styles = StyleSheet.create({
         flex: 1,
         flexDirection: 'row',
         marginVertical: 5,
-        // backgroundColor: 'white',
         borderWidth: 1,
         borderColor: '#e1e0e0',
         borderRadius: 10,

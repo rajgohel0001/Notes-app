@@ -18,35 +18,49 @@ export default class AddNote extends Component<Props>{
     }
 
     componentWillMount() {
-        if (!this.state.note)
-            return;
+        if (!this.state.note) return;
 
-        if (''.includes(this.state.note.noteDetail))
+        if (''.includes(this.state.note.noteDetail)){
             this.setState({ disableButtonCreate: true, currentButtonColor: this.state.disableColor });
-        else this.setState({ disableButtonCreate: false, currentButtonColor: this.state.enableColor });
+        } else {
+            this.setState({ disableButtonCreate: false, currentButtonColor: this.state.enableColor });
+        }
     }
 
+    /**
+     * change note text
+     */
     changeTxt = (text: string) => {
         let note = this.state.note;
-        if (!note)
-            return;
+        if (!note) return;
 
         note.noteDetail = text;
-        if (''.includes(this.state.note.noteDetail))
+        if (''.includes(this.state.note.noteDetail)){
             this.setState({ note, disableButtonCreate: true, currentButtonColor: this.state.disableColor });
-        else this.setState({ note, disableButtonCreate: false, currentButtonColor: this.state.enableColor });
+        } else {
+            this.setState({ note, disableButtonCreate: false, currentButtonColor: this.state.enableColor });
+        }
     }
 
+    /**
+     * change note title
+     */
     changeTxtTitle = (text: string) => {
         let note = this.state.note;
         if (!note) return;
 
         note.noteTitle = text;
-        if (''.includes(this.state.note.noteTitle))
+        if (''.includes(this.state.note.noteTitle)){
             this.setState({ note, disableButtonCreate: true, currentButtonColor: this.state.disableColor });
-        else this.setState({ note, disableButtonCreate: false, currentButtonColor: this.state.enableColor });
+        } else {
+            this.setState({ note, disableButtonCreate: false, currentButtonColor: this.state.enableColor });
+        }
     }
 
+    /**
+     * @param {*} note detail
+     * add note
+     */
     createNote = () => {
         if (!this.state.note) return;
 
