@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
-import { StyleSheet, Text, View, ToastAndroid, TouchableOpacity } from 'react-native';
+import { StyleSheet, Text, View, TouchableOpacity } from 'react-native';
 import { withNavigation } from 'react-navigation';
 
-class NoteView extends Component{
+class NoteView extends Component {
     constructor(props) {
         super(props);
 
@@ -24,6 +24,15 @@ class NoteView extends Component{
         const { navigate } = this.props.navigation;
         navigate('UpdateNote', { note: this.state.note.item.clone(), event: this.props.event })
     }
+    fun() {
+        if (styles.container.maxHeight == 200){
+            return(
+                <Text>gfhfh</Text>
+            )
+        }else{
+            return(null)
+        }
+    }
 
     render() {
         // console.log('state note====',this.state.note);
@@ -33,9 +42,10 @@ class NoteView extends Component{
         return (
             <TouchableOpacity onPress={this.goToScreenUpdateNote}>
                 <View style={styles.container}>
-                    <View style={{flexDirection:'column'}}>
+                    <View style={{ flexDirection: 'column' }}>
                         <Text style={styles.generalFontSize}>{this.state.note.item.noteTitle}</Text>
                         <Text style={styles.generaldetail}>{this.state.note.item.noteDetail}</Text>
+                      {this.fun()}
                     </View>
                 </View>
             </TouchableOpacity>
@@ -65,8 +75,8 @@ const styles = StyleSheet.create({
     icon: {
         marginHorizontal: 5,
     },
-    generaldetail:{
-        color:'gray',
-        fontSize:15
+    generaldetail: {
+        color: 'gray',
+        fontSize: 15
     }
 });
