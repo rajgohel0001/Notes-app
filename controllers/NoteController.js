@@ -8,7 +8,7 @@ const sqlite = SQLite.openDatabase({ name: 'notes-db', createFromLocation: '~dat
  * @param {*} note
  * create note 
  */
-export const createNote = (note: Note) => {
+export const createNote = (note) => {
     return new Promise((resolve, reject) => {
         let msg = new Message();
         if (!note) {
@@ -66,7 +66,7 @@ export const getAllNotes = () => {
  * @param {*} note
  * delete note 
  */
-export const deleteNote = (note: Note) => {
+export const deleteNote = (note) => {
     return new Promise((resolve, reject) => {
         let msg = new Message();
         if (!note) {
@@ -98,7 +98,7 @@ export const deleteNote = (note: Note) => {
  * @param {*} note
  * update note 
  */
-export const updateNote = (note: Note) => {
+export const updateNote = (note) => {
     return new Promise((resolve, reject) => {
         let msg = new Message();
         if (!note) {
@@ -109,7 +109,7 @@ export const updateNote = (note: Note) => {
 
         sqlite.transaction((tx) => {
             tx.executeSql('UPDATE Notes SET NoteDetail=?,NoteTitle=? WHERE NoteId=?', [note.noteDetail, note.noteTitle, note.noteId], (tx, results) => {
-                if (results.rowsAffected > 0) {
+                if (results.rowsAffected) {
                     msg.result = true;
                     msg.message = 'Update note successfully!';
                 } else {
@@ -131,12 +131,12 @@ export const updateNote = (note: Note) => {
  * @param {*} id
  * get note by id 
  */
-export const getNoteById = (id: number) => {
+export const getNoteById = (id) => {
     return new Promise((resolve, reject) => {
         let msg = new Message();
         sqlite.transaction((tx) => {
             tx.executeSql('SELECT * FROM Notes WHERE NoteId=?', [id], (tx, results) => {
-                if (results.rows.length > 0) {
+                if (results.rows.length) {
                     let item = results.rows.item(0);
                     let note = new Note(item.NoteId, item.NoteDetail, item.NoteTitle);
                     msg.result = note;
@@ -160,7 +160,7 @@ export const getNoteById = (id: number) => {
  * @param {*} id
  * check note if exists
  */
-const checkIfNoteExists = (id: number) => {
+const checkIfNoteExists = (id) => {
     getNoteById(id).then(({ result, message }) => {
         let msg = new Message();
         msg.result = note != null;

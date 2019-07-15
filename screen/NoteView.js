@@ -2,8 +2,8 @@ import React, { Component } from 'react';
 import { StyleSheet, Text, View, ToastAndroid, TouchableOpacity } from 'react-native';
 import { withNavigation } from 'react-navigation';
 
-class NoteView extends Component<Props>{
-    constructor(props: Props) {
+class NoteView extends Component{
+    constructor(props) {
         super(props);
 
         this.state = {
@@ -26,7 +26,7 @@ class NoteView extends Component<Props>{
     }
 
     render() {
-        console.log('state note====',this.state.note);
+        // console.log('state note====',this.state.note);
         if (!this.state.note)
             return <Text style={styles.generalFontSize}>Invalid note!</Text>
 
@@ -56,6 +56,8 @@ const styles = StyleSheet.create({
         padding: 10,
         margin: 15,
         height: 'auto',
+        maxHeight: 200,
+        overflow: 'hidden',
     },
     generalFontSize: {
         fontSize: 18,

@@ -5,8 +5,8 @@ import ListNotes from './ListNotes';
 import { getAllNotes } from '../controllers/NoteController';
 import { EventEmitter } from 'events';
 
-export default class Home extends Component<Props>{
-    constructor(props: Props) {
+export default class Home extends Component{
+    constructor(props) {
         super(props);
 
         this.state = {
@@ -38,7 +38,7 @@ export default class Home extends Component<Props>{
                 </View>
                 <TouchableOpacity
                     onPress={() => { this.props.navigation.navigate('AddNote', { event: this.event }) }}
-                    style={[styles.floatingMenuButtonStyle, { backgroundColor: '#f488f4', borderRadius: 40, height: 60, width: 60 }]}>
+                    style={[styles.floatingMenuButtonStyle, { backgroundColor: '#fff', elevation: 25, borderRadius: 40, height: 60, width: 60 }]}>
                     <Icon name="add"
                         size={30}
                         style={{ color: 'black', padding: 15 }}
@@ -60,6 +60,6 @@ const styles = StyleSheet.create({
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
-        backgroundColor: '#F5FCFF',
+        backgroundColor: '#F5FCFF'
     }
 });

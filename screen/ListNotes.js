@@ -1,10 +1,9 @@
 import React, { Component } from 'react';
 import { StyleSheet, ScrollView, FlatList } from 'react-native';
-import Note from '../models/Note';
 import NoteView from './NoteView';
 
-export default class ListNotes extends Component<Props>{
-    constructor(props: Props) {
+export default class ListNotes extends Component{
+    constructor(props) {
         super(props);
 
         this.state = {
@@ -20,7 +19,7 @@ export default class ListNotes extends Component<Props>{
         return(
         <FlatList
             data={this.state.notes}
-            renderItem={(note: any) =>{
+            renderItem={(note) =>{
                 if (note) {
                     return <NoteView key={note.noteId} note={note} event={this.props.event} onPress={this.goToScreenUpdateNote} />
                 }    
@@ -30,7 +29,7 @@ export default class ListNotes extends Component<Props>{
     }
 
     render() {
-        console.log('notes-----', this.state.notes);
+        // console.log('notes-----', this.state.notes);
         return (
             <ScrollView style={styles.container}>
                 {this.renderListNotes()}
@@ -44,6 +43,6 @@ const styles = StyleSheet.create({
         flex: 1,
         backgroundColor: '#F5FCFF',
         width: '100%',
-        marginTop: 10,
+        marginTop: 10
     },
 });

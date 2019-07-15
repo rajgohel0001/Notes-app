@@ -1,13 +1,13 @@
 import React, { Component } from 'react';
-import { StyleSheet, TextInput, Text, View, TouchableOpacity, ToastAndroid, Dimensions } from 'react-native';
+import { StyleSheet, TextInput, Text, View, TouchableOpacity, ScrollView, ToastAndroid, Dimensions, BackHandler } from 'react-native';
 import { updateNote } from '../controllers/NoteController';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 const { height, width } = Dimensions.get('screen');
 import { deleteNote } from '../controllers/NoteController';
 import RBSheet from "react-native-raw-bottom-sheet";
 
-export default class UpdateNote extends Component<Props>{
-    constructor(props: Props) {
+export default class UpdateNote extends Component {
+    constructor(props) {
         super(props);
 
         let note, event;
@@ -20,23 +20,17 @@ export default class UpdateNote extends Component<Props>{
 
         this.state = {
             note: note,
-            disableButtonCreate: true,
-            disableColor: '#f488f4',
-            enableColor: '#800080',
-            currentButtonColor: '#f488f4',
             event: event,
             isVisible: false
         };
     }
 
-    componentWillMount() {
-        if (!this.state.note) return;
+    componentDidMount() {
+        this.backHandler = BackHandler.addEventListener('hardwareBackPress', this.updateNote);
+    }
 
-        if (''.includes(this.state.note.noteDetail)){
-            this.setState({ disableButtonCreate: true, currentButtonColor: this.state.disableColor });
-        } else {
-            this.setState({ disableButtonCreate: false, currentButtonColor: this.state.enableColor });
-        }
+    componentWillUnmount() {
+        this.backHandler.remove()
     }
 
     /**
@@ -61,31 +55,23 @@ export default class UpdateNote extends Component<Props>{
     /**
      * change note text
      */
-    changeTxt = (text: string) => {
+    changeTxt = (text) => {
         let note = this.state.note;
         if (!note) return;
 
         note.noteDetail = text;
-        if (''.includes(this.state.note.noteDetail)){
-            this.setState({ note, disableButtonCreate: true, currentButtonColor: this.state.disableColor });
-        } else {
-            this.setState({ note, disableButtonCreate: false, currentButtonColor: this.state.enableColor });
-        }
+        this.setState({ note })
     }
 
     /**
      * change note title
      */
-    changeTxtTitle = (text: string) => {
+    changeTxtTitle = (text) => {
         let note = this.state.note;
         if (!note) return;
 
         note.noteTitle = text;
-        if (''.includes(this.state.note.noteTitle)){
-            this.setState({ note, disableButtonCreate: true, currentButtonColor: this.state.disableColor });
-        } else {
-            this.setState({ note, disableButtonCreate: false, currentButtonColor: this.state.enableColor });
-        }
+        this.setState({ note })
     }
 
     /**
@@ -93,16 +79,18 @@ export default class UpdateNote extends Component<Props>{
      * update note
      */
     updateNote = () => {
-        if (!this.state.note) return;
-
-        updateNote(this.state.note).then(({ result, message }) => {
-            ToastAndroid.show(message, ToastAndroid.SHORT);
-            if (result) {
-                if (this.state.event)
-                    this.state.event.emit('onUpdateNote');
-            }
-            this.props.navigation.navigate('Home');
-        });
+        if (!this.state.note.noteDetail){
+            ToastAndroid.show("Enter note details", ToastAndroid.SHORT);
+        } else {
+            updateNote(this.state.note).then(({ result, message }) => {
+                ToastAndroid.show(message, ToastAndroid.SHORT);
+                if (result) {
+                    if (this.state.event)
+                        this.state.event.emit('onUpdateNote');
+                }
+                this.props.navigation.navigate('Home');
+            });
+        }
     }
 
     render() {
@@ -112,26 +100,23 @@ export default class UpdateNote extends Component<Props>{
         return (
             <>
                 <View style={styles.container}>
-                    <TextInput
-                        style={[styles.input, styles.generalFontSize]}
-                        placeholder='title...'
-                        value={this.state.note.noteTitle}
-                        onChangeText={(text) => this.changeTxtTitle(text)}
-                        onSubmitEditing={this.updateNote}
-                    />
-                    <TextInput
-                        style={[styles.input, styles.generalFontSize]}
-                        placeholder='note...'
-                        value={this.state.note.noteDetail}
-                        onChangeText={(text) => this.changeTxt(text)}
-                        onSubmitEditing={this.updateNote}
-                        multiline = {true}
-                    />
-                    <TouchableOpacity
-                        style={[styles.buttonContainer, { backgroundColor: this.state.currentButtonColor }]}
-                        onPress={this.updateNote}>
-                        <Text style={[styles.buttonText, styles.generalFontSize]}>Update</Text>
-                    </TouchableOpacity>
+                    <ScrollView>
+                        <TextInput
+                            style={[styles.input, styles.titleFontSize]}
+                            placeholder='Title'
+                            value={this.state.note.noteTitle}
+                            onChangeText={(text) => this.changeTxtTitle(text)}
+                            onSubmitEditing={this.updateNote}
+                        />
+                        <TextInput
+                            style={[styles.input, styles.generalFontSize]}
+                            placeholder='Note'
+                            value={this.state.note.noteDetail}
+                            onChangeText={(text) => this.changeTxt(text)}
+                            onSubmitEditing={this.updateNote}
+                            multiline={true}
+                        />
+                    </ScrollView>
                 </View>
                 <View style={{ width: width, backgroundColor: 'white', elevation: 30, height: 40, bottom: 0 }}>
                     <TouchableOpacity
@@ -177,38 +162,24 @@ export default class UpdateNote extends Component<Props>{
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        // justifyContent: 'center',
-        alignItems: 'center',
-        alignSelf: 'center',
-        width: '90%',
         flexDirection: 'column',
         backgroundColor: 'white',
-        borderColor: '#e1e0e0',
         padding: 20,
         height: 'auto',
     },
     generalFontSize: {
         fontSize: 20,
     },
+    titleFontSize: {
+        fontSize: 30,
+    },
     input: {
         width: '100%',
-        borderBottomWidth: 1,
         borderBottomColor: '#800080',
         marginHorizontal: 5,
     },
     text: {
         width: '30%',
-    },
-    buttonContainer: {
-        top: 10,
-        width: '50%',
-        height: 50,
-        justifyContent: 'center',
-        alignItems: 'center',
-        borderRadius: 5,
-    },
-    buttonText: {
-        color: 'white',
     },
     floatingMenuButtonStyle: {
         alignSelf: 'flex-end',
