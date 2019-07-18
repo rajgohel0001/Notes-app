@@ -19,7 +19,7 @@ export const createNote = (note) => {
 
         sqlite.transaction((tx) => {
             tx.executeSql('INSERT INTO Notes(NoteDetail,NoteTitle) VALUES (?,?)', [note.noteDetail,note.noteTitle], (tx, results) => {
-                if (results.rowsAffected > 0) {
+                if (results.rowsAffected) {
                     msg.result = true;
                     msg.message = 'Create new note successfully!';
                 } else {
@@ -34,6 +34,39 @@ export const createNote = (note) => {
             });
         })
     });
+}
+
+/**
+ * @param {*} checklist note
+ */
+export const createCheckList = (note) => {
+    return new Promise((resolve, reject) => {
+        console.log('in checklist', note);
+        let msg = new Message();
+        if (!note) {
+            msg.result = false;
+            msg.message = 'Invalid note input!';
+            resolve({ result: msg.result, message: msg.message });
+        }
+
+        sqlite.transaction((tx) => {
+            tx.executeSql('INSERT INTO ChickList(NoteDetail,NoteTitle,IsChecked) VALUES (?,?,?)', [note.noteDetail,note.noteTitle,note.isChecked], (tx, results) => {
+                if (results.rowsAffected) {
+                    msg.result = true;
+                    msg.message = 'Create new checklist note successfully!';
+                } else {
+                    msg.result = false;
+                    msg.message = 'Create new note failed!';
+                }
+                resolve({ result: msg.result, message: msg.message });
+            }, (error) => {
+                msg.result = false;
+                msg.message = `${error.message}`;
+                resolve({ result: msg.result, message: msg.message });
+            });
+        })
+
+    })
 }
 
 /**
@@ -77,7 +110,7 @@ export const deleteNote = (note) => {
 
         sqlite.transaction((tx) => {
             tx.executeSql('DELETE FROM Notes WHERE NoteId=?', [note.noteId], (tx, results) => {
-                if (results.rowsAffected > 0) {
+                if (results.rowsAffected) {
                     msg.result = true;
                     msg.message = `Delete note with id=${note.noteId} successfully!`;
                 } else {

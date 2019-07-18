@@ -28,7 +28,8 @@ export default class AddNote extends Component {
         if (!note) return;
 
         note.noteDetail = text;
-        this.setState({ note })
+        this.setState({ note });
+        // this.createNote();
     }
 
     /**
@@ -39,7 +40,8 @@ export default class AddNote extends Component {
         if (!note) return;
 
         note.noteTitle = text;
-        this.setState({ note })
+        this.setState({ note });
+        // this.createNote();
     }
 
     /**
@@ -47,20 +49,19 @@ export default class AddNote extends Component {
      * add note
      */
     createNote = () => {
-        if (!this.state.note.noteDetail || !this.state.note.noteTitle){
+        if (!this.state.note.noteDetail){
             ToastAndroid.show("Empty note discarded.", ToastAndroid.SHORT);
         } else {
             createNote(this.state.note).then(({ result, message }) => {
                 // console.log('result:', result);
                 // console.log('state', this.state.note);
-                ToastAndroid.show(message, ToastAndroid.SHORT);
+                // ToastAndroid.show(message, ToastAndroid.SHORT);
                 // console.log('meaasge:', message);
                 if (result) {
                     this.setState({ note: new Note() });
-                    Keyboard.dismiss();
                     this.props.navigation.state.params.event.emit('onCreateNote');
                 }
-                this.props.navigation.navigate('Home');
+                // this.props.navigation.navigate('Home');
             });
         }
     }

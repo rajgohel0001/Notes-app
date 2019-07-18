@@ -1,6 +1,10 @@
 import React, { Component } from 'react';
-import { StyleSheet, Text, View, TouchableOpacity } from 'react-native';
+import { StyleSheet, Text, View, ToastAndroid } from 'react-native';
 import { withNavigation } from 'react-navigation';
+import Ripple from 'react-native-material-ripple';
+import RBSheet from "react-native-raw-bottom-sheet";
+import Icon from 'react-native-vector-icons/MaterialIcons';
+import { deleteNote } from '../controllers/NoteController';
 
 class NoteView extends Component {
     constructor(props) {
@@ -8,11 +12,32 @@ class NoteView extends Component {
 
         this.state = {
             note: this.props.note,
+            event: this.props.event,
+            height: []
         };
     }
 
     componentWillReceiveProps(nextProps) {
         this.setState({ note: nextProps.note });
+    }
+
+    /**
+     * @param {*} note
+     * delete note
+     */
+    deleteNote = () => {
+        this.setState({ isVisible: true })
+        if (!this.state.note.item) return;
+
+        deleteNote(this.state.note.item).then(({ result, message }) => {
+            ToastAndroid.show(message, ToastAndroid.SHORT);
+            if (result) {
+                if (this.state.event)
+                    this.state.event.emit('onDeleteNote');
+                this.RBSheet.close();
+                // this.props.navigation.navigate('Home');
+            }
+        });
     }
 
     /**
@@ -24,31 +49,57 @@ class NoteView extends Component {
         const { navigate } = this.props.navigation;
         navigate('UpdateNote', { note: this.state.note.item.clone(), event: this.props.event })
     }
-    fun() {
-        if (styles.container.maxHeight == 200){
-            return(
-                <Text>gfhfh</Text>
-            )
-        }else{
-            return(null)
-        }
-    }
 
     render() {
         // console.log('state note====',this.state.note);
+        // console.log('height', this.state.height);
         if (!this.state.note)
             return <Text style={styles.generalFontSize}>Invalid note!</Text>
 
         return (
-            <TouchableOpacity onPress={this.goToScreenUpdateNote}>
-                <View style={styles.container}>
-                    <View style={{ flexDirection: 'column' }}>
-                        <Text style={styles.generalFontSize}>{this.state.note.item.noteTitle}</Text>
-                        <Text style={styles.generaldetail}>{this.state.note.item.noteDetail}</Text>
-                      {this.fun()}
+            <>
+                <Ripple
+                    onPress={this.goToScreenUpdateNote}
+                    onLongPress={() => this.RBSheet.open()}>
+                    <View style={styles.container}
+                        onLayout={(event) => {
+                            const { x, y, width, height } = event.nativeEvent.layout;
+                            // console.log('view detail=======', x, y, width, height);
+                            this.setState({ height: height })
+                        }}>
+                        <View style={{ flexDirection: 'column' }}>
+                            <Text style={styles.generalFontSize}>{this.state.note.item.noteTitle}</Text>
+                            <Text style={styles.generaldetail}>{this.state.note.item.noteDetail}</Text>
+                        </View>
+                        {this.state.height === 200 ? <Text style={{top: 150, left: -35, fontSize: 18}}>...</Text> : null}
                     </View>
+                </Ripple>
+                <View>
+                    <RBSheet
+                        ref={ref => {
+                            this.RBSheet = ref;
+                        }}
+                        height={100}
+                        duration={250}
+                        customStyles={{
+                            container: {
+                                borderTopLeftRadius: 15,
+                                borderTopRightRadius: 15
+                            }
+                        }}>
+                        <View style={{ flex: 1, flexDirection: 'row', padding: 10 }}>
+                            <Icon
+                                name='delete'
+                                style={styles.icon}
+                                color='red'
+                                size={30}
+                                onPress={this.deleteNote}
+                            />
+                            <Text style={{ fontSize: 20 }} onPress={this.deleteNote}>Delete</Text>
+                        </View>
+                    </RBSheet>
                 </View>
-            </TouchableOpacity>
+            </>
         );
     }
 }

@@ -41,7 +41,7 @@ export default class ListNotes extends Component{
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: '#F5FCFF',
+        // backgroundColor: '#F5FCFF',
         width: '100%',
         marginTop: 10
     },

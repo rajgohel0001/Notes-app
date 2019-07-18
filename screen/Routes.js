@@ -2,6 +2,7 @@ import {createStackNavigator, createAppContainer} from 'react-navigation';
 import Home from './Home';
 import AddNote from './AddNote';
 import UpdateNote from './UpdateNote';
+import CheckList from './CheckList';
 
 const MainNavigator = createStackNavigator({
     Home: {
@@ -12,7 +13,8 @@ const MainNavigator = createStackNavigator({
         }
     },
     AddNote: {screen: AddNote},
-    UpdateNote: {screen: UpdateNote}
+    UpdateNote: {screen: UpdateNote},
+    CheckList: {screen: CheckList}
   });
 
   const Routes = createAppContainer(MainNavigator);

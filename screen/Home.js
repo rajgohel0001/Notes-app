@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
-import { StyleSheet, View, TouchableOpacity } from 'react-native';
+import { StyleSheet, View, TouchableOpacity, Dimensions } from 'react-native';
+const { height, width } = Dimensions.get('screen');
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import ListNotes from './ListNotes';
 import { getAllNotes } from '../controllers/NoteController';
@@ -44,6 +45,16 @@ export default class Home extends Component{
                         style={{ color: 'black', padding: 15 }}
                     />
                 </TouchableOpacity>
+                <View style={{ width: width, backgroundColor: 'white', elevation: 30, height: 40, bottom: 0 }}>
+                    <TouchableOpacity
+                        onPress={() => { this.props.navigation.navigate('CheckList', { event: this.event }) }}
+                        style={styles.navbar}>
+                        <Icon name="check-box"
+                            size={30}
+                            style={{ color: 'black', padding: 25, opacity: 0.6 }}
+                        />
+                    </TouchableOpacity>
+                </View>
             </>
         )
     }
@@ -53,13 +64,20 @@ const styles = StyleSheet.create({
     floatingMenuButtonStyle: {
         alignSelf: 'flex-end',
         position: 'absolute',
-        bottom: 15,
+        bottom: 50,
         right: 15,
+    },
+    navbar: {
+        alignSelf: 'flex-end',
+        position: 'absolute',
+        bottom: 0,
+        right: 0,
+        height: 60,
     },
     container: {
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
-        backgroundColor: '#F5FCFF'
+        // backgroundColor: '#F5FCFF'
     }
 });

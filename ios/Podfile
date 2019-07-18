@@ -39,6 +39,9 @@ target 'Notes' do
 
   pod 'RNEventEmitter', :path => '../node_modules/react-native-events'
 
+
+  pod 'RNCReactNativeCheckbox', :path => '../node_modules/@react-native-community/checkbox'
+
   target 'NotesTests' do
     inherit! :search_paths
     # Pods for testing

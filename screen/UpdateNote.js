@@ -42,7 +42,7 @@ export default class UpdateNote extends Component {
         if (!this.state.note) return;
 
         deleteNote(this.state.note).then(({ result, message }) => {
-            ToastAndroid.show(message, ToastAndroid.SHORT);
+            // ToastAndroid.show(message, ToastAndroid.SHORT);
             if (result) {
                 if (this.state.event)
                     this.state.event.emit('onDeleteNote');
@@ -61,6 +61,7 @@ export default class UpdateNote extends Component {
 
         note.noteDetail = text;
         this.setState({ note })
+        this.updateNote();
     }
 
     /**
@@ -72,6 +73,7 @@ export default class UpdateNote extends Component {
 
         note.noteTitle = text;
         this.setState({ note })
+        this.updateNote();
     }
 
     /**
@@ -83,12 +85,12 @@ export default class UpdateNote extends Component {
             ToastAndroid.show("Enter note details", ToastAndroid.SHORT);
         } else {
             updateNote(this.state.note).then(({ result, message }) => {
-                ToastAndroid.show(message, ToastAndroid.SHORT);
+                // ToastAndroid.show(message, ToastAndroid.SHORT);
                 if (result) {
                     if (this.state.event)
                         this.state.event.emit('onUpdateNote');
                 }
-                this.props.navigation.navigate('Home');
+                // this.props.navigation.navigate('Home');
             });
         }
     }
