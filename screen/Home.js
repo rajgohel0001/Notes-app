@@ -3,10 +3,11 @@ import { StyleSheet, View, TouchableOpacity, Dimensions } from 'react-native';
 const { height, width } = Dimensions.get('screen');
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import ListNotes from './ListNotes';
+import ListCheckList from './ListCheckList';
 import { getAllNotes } from '../controllers/NoteController';
 import { EventEmitter } from 'events';
 
-export default class Home extends Component{
+export default class Home extends Component {
     constructor(props) {
         super(props);
 
@@ -28,17 +29,24 @@ export default class Home extends Component{
     }
 
     initListNotes = () => {
-        getAllNotes().then(({ result, message }) => this.setState({ notes: result }));
+        getAllNotes().then((respnose) => {
+            // getAllNotes().then(({ result, message }) => this.setState({ notes: result }));
+            this.setState({ notes: respnose.result});
+            // console.log('respnose: ', respnose);
+        }).catch((error) => {
+            console.log('errror: ', error);
+        });
     }
 
     render() {
+        console.log('notes: ', this.state.notes);
         return (
             <>
                 <View style={styles.container}>
                     <ListNotes notes={this.state.notes} event={this.event} />
                 </View>
                 <TouchableOpacity
-                    onPress={() => { this.props.navigation.navigate('AddNote', { event: this.event }) }}
+                    onPress={() => { this.props.navigation.navigate('AddNote', { event: this.event, hasCheckList: 0 }) }}
                     style={[styles.floatingMenuButtonStyle, { backgroundColor: '#fff', elevation: 25, borderRadius: 40, height: 60, width: 60 }]}>
                     <Icon name="add"
                         size={30}
@@ -47,7 +55,7 @@ export default class Home extends Component{
                 </TouchableOpacity>
                 <View style={{ width: width, backgroundColor: 'white', elevation: 30, height: 40, bottom: 0 }}>
                     <TouchableOpacity
-                        onPress={() => { this.props.navigation.navigate('CheckList', { event: this.event }) }}
+                        onPress={() => { this.props.navigation.navigate('CheckList', { event: this.event, hasCheckList: 1 }) }}
                         style={styles.navbar}>
                         <Icon name="check-box"
                             size={30}

@@ -9,7 +9,7 @@ export default class AddNote extends Component {
         super(props);
         this.state = {
             note: new Note(),
-            event: this.props.event
+            event: this.props.event,
         };
     }
     componentDidMount() {
@@ -27,7 +27,7 @@ export default class AddNote extends Component {
         let note = this.state.note;
         if (!note) return;
 
-        note.noteDetail = text;
+        note.detail = text;
         this.setState({ note });
         // this.createNote();
     }
@@ -39,7 +39,7 @@ export default class AddNote extends Component {
         let note = this.state.note;
         if (!note) return;
 
-        note.noteTitle = text;
+        note.title = text;
         this.setState({ note });
         // this.createNote();
     }
@@ -49,14 +49,16 @@ export default class AddNote extends Component {
      * add note
      */
     createNote = () => {
-        if (!this.state.note.noteDetail){
+        console.log('this.state.note: ', this.state.note);
+        if (!this.state.note.detail) {
             ToastAndroid.show("Empty note discarded.", ToastAndroid.SHORT);
         } else {
+            this.state.note.hasCheckList = this.props.navigation.state.params.hasCheckList;
             createNote(this.state.note).then(({ result, message }) => {
                 // console.log('result:', result);
                 // console.log('state', this.state.note);
-                // ToastAndroid.show(message, ToastAndroid.SHORT);
-                // console.log('meaasge:', message);
+                ToastAndroid.show(message, ToastAndroid.SHORT);
+                console.log('meaasge:', message);
                 if (result) {
                     this.setState({ note: new Note() });
                     this.props.navigation.state.params.event.emit('onCreateNote');

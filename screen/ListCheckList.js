@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 import { StyleSheet, ScrollView, FlatList } from 'react-native';
-import NoteView from './NoteView';
+import CheckListView from './CheckListView';
 
-export default class ListNotes extends Component{
+export default class ListCheckList extends Component{
     constructor(props) {
         super(props);
 
@@ -21,7 +21,7 @@ export default class ListNotes extends Component{
             data={this.state.notes}
             renderItem={(note) =>{
                 if (note) {
-                    return <NoteView key={note.noteId} note={note} event={this.props.event}/>
+                    return <CheckListView key={note.noteId} note={note} event={this.props.event}/>
                 }    
             }}
         />

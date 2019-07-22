@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { StyleSheet, Text, View, ToastAndroid } from 'react-native';
+import { StyleSheet, Text, View, ToastAndroid, FlatList, CheckBox } from 'react-native';
 import { withNavigation } from 'react-navigation';
 import Ripple from 'react-native-material-ripple';
 import RBSheet from "react-native-raw-bottom-sheet";
@@ -15,6 +15,14 @@ class NoteView extends Component {
             event: this.props.event,
             height: []
         };
+        // console.log('this.props.note==============>', this.props.note);
+        if (this.props.note.item.checkList) {
+            let checklist = JSON.parse(this.props.note.item.checkList);
+            // console.log("checklist after parse================>", checklist);
+            this.props.note.item.checkList = checklist;
+            // console.log("final====================>", this.props.note);
+            this.setState({ note: this.props.note })
+        }
     }
 
     componentWillReceiveProps(nextProps) {
@@ -40,6 +48,21 @@ class NoteView extends Component {
         });
     }
 
+    renderNote() {
+        if (this.state.note.item && this.state.note.item.checkList && this.state.note.item.checkList.length) {
+            return (
+                this.state.note.item.checkList.map((note) => {
+                    return (
+                        <View style={{ flexDirection: 'row' }}>
+                            <CheckBox></CheckBox>
+                            <Text style={{ marginTop: 5 }}>{note.note}</Text>
+                        </View>
+                    )
+                })
+            )
+        }
+    }
+
     /**
      * update note
      */
@@ -51,10 +74,10 @@ class NoteView extends Component {
     }
 
     render() {
-        // console.log('state note====',this.state.note);
+        console.log('state note====', this.state.note);
         // console.log('height', this.state.height);
         if (!this.state.note)
-            return <Text style={styles.generalFontSize}>Invalid note!</Text>
+            return <Text style={styles.generalFontSize}>No note found!</Text>
 
         return (
             <>
@@ -68,10 +91,26 @@ class NoteView extends Component {
                             this.setState({ height: height })
                         }}>
                         <View style={{ flexDirection: 'column' }}>
-                            <Text style={styles.generalFontSize}>{this.state.note.item.noteTitle}</Text>
-                            <Text style={styles.generaldetail}>{this.state.note.item.noteDetail}</Text>
+                            <Text style={styles.generalFontSize}>{this.state.note.item.title}</Text>
+                            {this.state.note.item.hasCheckList == 0 ?
+                                <Text style={styles.generaldetail}>{this.state.note.item.detail}</Text> : null
+                                // <FlatList
+                                //     data={this.state.note.item.checkList}
+                                //     renderItem={(item) => {
+                                //         console.log('render item=====',item),
+                                //         <Text>{item.note}</Text>
+                                //     }}
+                                // ></FlatList>
+                                // this.state.note.item.checkList.map((note) => {
+                                //     return (
+                                //         <Text>{note.note}</Text>
+                                //     )
+                                // })
+                            }
+                            {this.state.note.item.checkList.length ? <Text>found</Text> : <Text>not found</Text>}
+                            {/* <Text style={styles.generaldetail}>{this.state.note.item.checkList}</Text> */}
                         </View>
-                        {this.state.height === 200 ? <Text style={{top: 150, left: -35, fontSize: 18}}>...</Text> : null}
+                        {this.state.height === 200 ? <Text style={{ top: 150, left: -35, fontSize: 18 }}>...</Text> : null}
                     </View>
                 </Ripple>
                 <View>

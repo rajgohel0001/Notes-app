@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { StyleSheet, TextInput, Text, View, TouchableOpacity, ScrollView, ToastAndroid, Dimensions, BackHandler } from 'react-native';
+import { StyleSheet, TextInput, Text, View, TouchableOpacity, ScrollView, ToastAndroid, Dimensions, BackHandler, CheckBox } from 'react-native';
 import { updateNote } from '../controllers/NoteController';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 const { height, width } = Dimensions.get('screen');
@@ -59,7 +59,7 @@ export default class UpdateNote extends Component {
         let note = this.state.note;
         if (!note) return;
 
-        note.noteDetail = text;
+        note.detail = text;
         this.setState({ note })
         this.updateNote();
     }
@@ -71,7 +71,7 @@ export default class UpdateNote extends Component {
         let note = this.state.note;
         if (!note) return;
 
-        note.noteTitle = text;
+        note.title = text;
         this.setState({ note })
         this.updateNote();
     }
@@ -81,7 +81,7 @@ export default class UpdateNote extends Component {
      * update note
      */
     updateNote = () => {
-        if (!this.state.note.noteDetail){
+        if (!this.state.note.detail) {
             ToastAndroid.show("Enter note details", ToastAndroid.SHORT);
         } else {
             updateNote(this.state.note).then(({ result, message }) => {
@@ -96,6 +96,7 @@ export default class UpdateNote extends Component {
     }
 
     render() {
+        console.log('update note: ', this.state.note);
         if (!this.state.note)
             return <Text style={styles.generalFontSize}>Invalid note!</Text>
 
@@ -106,18 +107,27 @@ export default class UpdateNote extends Component {
                         <TextInput
                             style={[styles.input, styles.titleFontSize]}
                             placeholder='Title'
-                            value={this.state.note.noteTitle}
+                            value={this.state.note.title}
                             onChangeText={(text) => this.changeTxtTitle(text)}
                             onSubmitEditing={this.updateNote}
                         />
-                        <TextInput
+                        {this.state.note.hasCheckList === 0 ? <TextInput
                             style={[styles.input, styles.generalFontSize]}
                             placeholder='Note'
-                            value={this.state.note.noteDetail}
+                            value={this.state.note.detail}
                             onChangeText={(text) => this.changeTxt(text)}
                             onSubmitEditing={this.updateNote}
                             multiline={true}
-                        />
+                        /> :
+                            this.state.note.checkList.map((note) => {
+                                return (
+                                    <View style={{ flexDirection: 'row' }}>
+                                        <CheckBox></CheckBox>
+                                        <TextInput style={{marginTop: -10}}>{note.note}</TextInput>
+                                    </View>
+                                )
+                            })
+                        }
                     </ScrollView>
                 </View>
                 <View style={{ width: width, backgroundColor: 'white', elevation: 30, height: 40, bottom: 0 }}>
