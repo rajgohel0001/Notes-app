@@ -118,6 +118,7 @@ export const deleteNote = (note) => {
  * update note 
  */
 export const updateNote = (note) => {
+    console.log('note in controller: ', note)
     return new Promise((resolve, reject) => {
         let msg = new Message();
         if (!note) {
@@ -127,7 +128,7 @@ export const updateNote = (note) => {
         }
 
         sqlite.transaction((tx) => {
-            tx.executeSql('UPDATE Note SET detail=?, title=? WHERE noteId=?', [note.detail, note.title, note.noteId], (tx, results) => {
+            tx.executeSql('UPDATE Note SET detail=?, title=?, checkList=? WHERE noteId=?', [note.detail, note.title, note.checkList, note.noteId], (tx, results) => {
                 if (results.rowsAffected) {
                     msg.result = true;
                     msg.message = 'Update note successfully!';

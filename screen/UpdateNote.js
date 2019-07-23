@@ -1,19 +1,21 @@
 import React, { Component } from 'react';
-import { StyleSheet, TextInput, Text, View, TouchableOpacity, ScrollView, ToastAndroid, Dimensions, BackHandler, CheckBox } from 'react-native';
+import { StyleSheet, TextInput, Text, View, TouchableOpacity, ScrollView, ToastAndroid, Dimensions, Animated, BackHandler, CheckBox } from 'react-native';
 import { updateNote } from '../controllers/NoteController';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 const { height, width } = Dimensions.get('screen');
 import { deleteNote } from '../controllers/NoteController';
 import RBSheet from "react-native-raw-bottom-sheet";
 
+array = [];
+arraySecond = [];
+let tempCheckValues = [];
+
 export default class UpdateNote extends Component {
     constructor(props) {
         super(props);
 
         let note, event;
-        if (this.props.navigation
-            && this.props.navigation.state
-            && this.props.navigation.state.params) {
+        if (this.props.navigation && this.props.navigation.state && this.props.navigation.state.params) {
             note = this.props.navigation.state.params.note;
             event = this.props.navigation.state.params.event;
         }
@@ -21,12 +23,21 @@ export default class UpdateNote extends Component {
         this.state = {
             note: note,
             event: event,
-            isVisible: false
+            isVisible: false,
+            ViewArray: [],
+            DisableButton: false,
+            isChecked: false,
+            checklist: '',
+            checkBoxChecked: []
         };
+        this.animatedValue = new Animated.Value(0);
+        this.ArrayValueIndex = 0;
     }
 
     componentDidMount() {
         this.backHandler = BackHandler.addEventListener('hardwareBackPress', this.updateNote);
+        array = this.state.note.checkList;
+        // console.log('array componentdid:', array);
     }
 
     componentWillUnmount() {
@@ -49,6 +60,77 @@ export default class UpdateNote extends Component {
                 this.RBSheet.close();
                 this.props.navigation.navigate('Home');
             }
+        });
+    }
+
+    changeNote(index, detail) {
+        console.log(index, detail);
+        const obj = {
+            note: detail,
+            isChecked: 0
+        }
+        console.log('array object', obj);
+        // array.push(obj);
+        array[index] = obj;
+        console.log('array:', array);
+        // this.setState({
+        //     checklistArr: [...this.state.checklistArr, obj]
+        // })
+        // console.log("arrrrrr=========>",arr,this.state.checklistArr)
+        // console.log("state=========>", this.state.checklistArr)
+    }
+
+    changeNoteSecondArray(index, detail) {
+        console.log(index, detail);
+        const obj = {
+            note: detail,
+            isChecked: 0
+        }
+        console.log('arraySecond object:', obj);
+        // array.push(obj);
+        arraySecond[index] = obj;
+        console.log('arraySecond:', arraySecond);
+    }
+
+    // insertToArray(txt){
+    //     array
+    // }
+
+    /**
+     * 
+     * @param {*} id 
+     * @param {*} value
+     * change checkbox value 
+     */
+    checkBoxChanged(id, value) {
+        this.setState({
+            checkBoxChecked: tempCheckValues
+        })
+        let tempCheckBoxChecked = this.state.checkBoxChecked;
+        tempCheckBoxChecked[id] = !value;
+        this.setState({
+            checkBoxChecked: tempCheckBoxChecked
+        })
+    }
+
+    /**
+     * add new view
+     */
+    AddNewView = () => {
+        this.animatedValue.setValue(0);
+        let NewAddedViewValue = { ArrayValueIndex: this.ArrayValueIndex }
+        this.setState({ DisableButton: true, ViewArray: [...this.state.ViewArray, NewAddedViewValue] }, () => {
+            Animated.timing(
+                this.animatedValue,
+                {
+                    toValue: 1,
+                    duration: 400,
+                    useNativeDriver: true
+                }
+            ).start(() => {
+                this.ArrayValueIndex = this.ArrayValueIndex + 1;
+                this.setState({ DisableButton: false });
+            });
         });
     }
 
@@ -81,11 +163,15 @@ export default class UpdateNote extends Component {
      * update note
      */
     updateNote = () => {
-        if (!this.state.note.detail) {
+        if (!this.state.note.detail && !this.state.note.title) {
             ToastAndroid.show("Enter note details", ToastAndroid.SHORT);
         } else {
+            const mainArray = array.concat(arraySecond);
+            console.log('mainArray:', mainArray);
+            this.state.note.checkList = (JSON.stringify(mainArray)).toString();
+            console.log('mainArray in string: ', (JSON.stringify(mainArray)).toString());
             updateNote(this.state.note).then(({ result, message }) => {
-                // ToastAndroid.show(message, ToastAndroid.SHORT);
+                ToastAndroid.show(message, ToastAndroid.SHORT);
                 if (result) {
                     if (this.state.event)
                         this.state.event.emit('onUpdateNote');
@@ -97,6 +183,32 @@ export default class UpdateNote extends Component {
 
     render() {
         console.log('update note: ', this.state.note);
+
+        /**
+         * render animated view
+         */
+        let RenderAnimatedView = this.state.ViewArray.map((item, key) => {
+            { tempCheckValues[key] = false }
+            return (
+                <Animated.View
+                    key={key}>
+                    <View style={{ flex: 1, flexDirection: 'row' }}>
+                        <CheckBox
+                            value={this.state.checkBoxChecked[key]}
+                            onValueChange={() => this.checkBoxChanged(key, this.state.checkBoxChecked[key])}
+                        />
+                        <TextInput
+                            placeholder='Note'
+                            style={[styles.generalFontSize, { bottom: 10, left: 10 }]}
+                            // onBlur={(e) =>{this.checkListObject(e)}}
+                            // onFocus={(txt) => this.insertToArray(txt)}
+                            onChangeText={(txt) => this.changeNoteSecondArray(key, txt)}>
+                        </TextInput>
+                    </View>
+                </Animated.View>
+            );
+        });
+
         if (!this.state.note)
             return <Text style={styles.generalFontSize}>Invalid note!</Text>
 
@@ -119,15 +231,30 @@ export default class UpdateNote extends Component {
                             onSubmitEditing={this.updateNote}
                             multiline={true}
                         /> :
-                            this.state.note.checkList.map((note) => {
+                            this.state.note.checkList.map((note, index) => {
+                                { tempCheckValues[index] = false }
                                 return (
                                     <View style={{ flexDirection: 'row' }}>
-                                        <CheckBox></CheckBox>
-                                        <TextInput style={{marginTop: -10}}>{note.note}</TextInput>
+                                        <CheckBox
+                                            value={this.state.checkBoxChecked[index]}
+                                            onValueChange={() => this.checkBoxChanged(index, this.state.checkBoxChecked[index])}
+                                        />
+                                        <TextInput key={index} 
+                                            placeholder='Note'
+                                            style={[styles.generalFontSize, { bottom: 10, left: 10 }]}
+                                            onChangeText={(txt) => this.changeNote(index, txt)}>
+                                            {note.note}
+                                        </TextInput>
                                     </View>
                                 )
                             })
                         }
+                        {RenderAnimatedView}
+                        {this.state.note.hasCheckList == 1 ?
+                            <TouchableOpacity onPress={this.AddNewView}>
+                                <Text style={styles.generalFontSize}> + List item </Text>
+                            </TouchableOpacity>
+                            : null}
                     </ScrollView>
                 </View>
                 <View style={{ width: width, backgroundColor: 'white', elevation: 30, height: 40, bottom: 0 }}>

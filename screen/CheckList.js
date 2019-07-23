@@ -4,7 +4,8 @@ import Icon from 'react-native-vector-icons/MaterialIcons';
 import Note from '../models/Note';
 import { createNote } from '../controllers/NoteController';
 
-array = [];
+let array = [];
+let tempCheckValues = [];
 
 export default class CheckList extends Component {
 
@@ -14,16 +15,13 @@ export default class CheckList extends Component {
             note: new Note(),
             ViewArray: [],
             DisableButton: false,
-            // notes: [],
             isChecked: false,
             checklist: '',
             event: this.props.event,
-            // checklistArr: []
+            checkBoxChecked: []
         };
         this.animatedValue = new Animated.Value(0);
         this.ArrayValueIndex = 0;
-        this.funIschecked = this.funIschecked.bind(this);
-        this.funcheck = this.funcheck.bind(this);
     }
 
     componentDidMount() {
@@ -115,10 +113,12 @@ export default class CheckList extends Component {
     // }
 
     changeNote(index, detail) {
-        console.log(index, detail);
+        let checkBoxArray = this.state.checkBoxChecked;
+        console.log(index, detail, checkBoxArray);
+        let isCheckedValue = checkBoxArray[index];
         const obj = {
             note: detail,
-            isChecked: 0
+            isChecked: isCheckedValue == true ? 1 : 0
         }
         console.log('object=====', obj);
         // array.push(obj);
@@ -156,48 +156,42 @@ export default class CheckList extends Component {
         console.log("state=========>", this.state.checklistArr)
     }
 
-    funcheck() {
-        console.log('ischecked=====', this.state.isChecked);
-        this.setState({ isChecked: !this.state.isChecked });
-    }
-
-    funIschecked() {
-        console.log('state data=====', this.state.isChecked);
-        // const checked = this.state.isChecked;
-
-        if (this.state.isChecked === false) {
-            this.setState({ isChecked: true });
-        } else {
-            this.setState({ isChecked: false });
-        }
+    /**
+     * 
+     * @param {*} id 
+     * @param {*} value
+     * change checkbox value 
+     */
+    checkBoxChanged(id, value) {
+        this.setState({
+            checkBoxChecked: tempCheckValues
+        })
+        let tempCheckBoxChecked = this.state.checkBoxChecked;
+        tempCheckBoxChecked[id] = !value;
+        this.setState({
+            checkBoxChecked: tempCheckBoxChecked
+        })
+        console.log('checkbox:', this.state.checkBoxChecked);
     }
 
     render() {
-        console.log('view array=====', this.state.ViewArray);
-        console.log('array index=====', this.ArrayValueIndex);
-        console.log('note=====', this.state.note);
-        console.log('hasCheckList===== ', this.props.navigation.state.params.hasCheckList);
+        console.log('view array:', this.state.ViewArray);
+        console.log('array index:', this.ArrayValueIndex);
+        console.log('note:', this.state.note);
+        console.log('hasCheckList:', this.props.navigation.state.params.hasCheckList);
 
         /**
          * render animated view
          */
         let RenderAnimatedView = this.state.ViewArray.map((item, key) => {
+            { tempCheckValues[key] = false }
             return (
                 <Animated.View
                     key={key}>
                     <View style={{ flex: 1, flexDirection: 'row' }}>
-                        {this.state.isChecked === false ? <Icon
-                            name='check-box-outline-blank'
-                            size={30}
-                            onPress={this.funIschecked}
-                        /> : <Icon
-                                name='check-box'
-                                size={30}
-                                onPress={this.funIschecked}
-                            />}
                         <CheckBox
-                            value={this.state.isChecked}
-                            onPress={this.funcheck}
+                            value={this.state.checkBoxChecked[key]}
+                            onValueChange={() => this.checkBoxChanged(key, this.state.checkBoxChecked[key])}
                         />
                         <TextInput
                             placeholder='Note'

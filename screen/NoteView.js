@@ -48,17 +48,38 @@ class NoteView extends Component {
         });
     }
 
-    renderNote() {
-        if (this.state.note.item && this.state.note.item.checkList && this.state.note.item.checkList.length) {
+    renderNote = () => {
+        console.log('checklistttt============>', typeof this.state.note.item.checkList);
+        // if (typeof this.state.note.item.checkList === 'string') {
+        //     let checklist = JSON.parse(this.state.note.item.checkList);
+        //     console.log("parse checklist=============>", checklist)
+        // }
+        if (this.state.note.item.checkList && this.state.note.item.checkList.length) {
             return (
-                this.state.note.item.checkList.map((note) => {
+                this.state.note.item.checkList.map((note, index) => {
                     return (
-                        <View style={{ flexDirection: 'row' }}>
+                        <View key={index} style={{ flexDirection: 'row' }}>
                             <CheckBox></CheckBox>
                             <Text style={{ marginTop: 5 }}>{note.note}</Text>
                         </View>
                     )
                 })
+                // <FlatList
+                //     data={this.state.note.item.checkList}
+                //     renderItem={(listData) => {
+                //         return (
+                //             console.log('render item=====', listData),
+                //             <View style={{ flexDirection: 'row' }}>
+                //             <CheckBox></CheckBox>
+                //             <Text style={{ marginTop: 5 }}>{listData.item.note}</Text>
+                //             </View>
+                //         )
+                //     }}
+                // ></FlatList>
+            )
+        } else {
+            return (
+                <Text>Hello</Text>
             )
         }
     }
@@ -107,7 +128,8 @@ class NoteView extends Component {
                                 //     )
                                 // })
                             }
-                            {this.state.note.item.checkList.length ? <Text>found</Text> : <Text>not found</Text>}
+                            {this.renderNote()}
+                            {/* {this.state.note.item.checkList.length ? <Text>found</Text> : <Text>not found</Text>} */}
                             {/* <Text style={styles.generaldetail}>{this.state.note.item.checkList}</Text> */}
                         </View>
                         {this.state.height === 200 ? <Text style={{ top: 150, left: -35, fontSize: 18 }}>...</Text> : null}
