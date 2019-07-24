@@ -17,16 +17,24 @@ class NoteView extends Component {
         };
         // console.log('this.props.note==============>', this.props.note);
         if (this.props.note.item.checkList) {
-            let checklist = JSON.parse(this.props.note.item.checkList);
+            // let checklist = JSON.parse(this.props.note.item.checkList);
             // console.log("checklist after parse================>", checklist);
-            this.props.note.item.checkList = checklist;
+            // const type = typeof JSON.parse(this.props.note.item.checkList);
+            // console.log('type:', type);
+            // this.props.note.item.checkList = checklist;
             // console.log("final====================>", this.props.note);
             this.setState({ note: this.props.note })
         }
     }
 
-    componentWillReceiveProps(nextProps) {
-        this.setState({ note: nextProps.note });
+    // componentWillReceiveProps(nextProps) {
+    //     this.setState({ note: nextProps.note });
+    // }
+
+    static getDerivedStateFromProps(nextProps, prevState) {
+        return {
+            note: nextProps.note
+        }
     }
 
     /**
@@ -54,13 +62,20 @@ class NoteView extends Component {
         //     let checklist = JSON.parse(this.state.note.item.checkList);
         //     console.log("parse checklist=============>", checklist)
         // }
-        if (this.state.note.item.checkList && this.state.note.item.checkList.length) {
+        // if (this.state.note.item && this.state.note.item.checkList && this.state.note.item.checkList.length) {
+        //     this.state.note.item.checkList = JSON.parse(JSON.stringify(this.state.note.item.checkList));
+        // }
+        // console.log('lenght of checklisrt:', JSON.parse(JSON.stringify(this.state.note.item.checkList)));
+        // console.log('checked its: ', this.state.note.item.checkList.length != 0);
+        if (this.state.note.item.checkList && this.state.note.item.checkList.length != 0) {
             return (
                 this.state.note.item.checkList.map((note, index) => {
                     return (
                         <View key={index} style={{ flexDirection: 'row' }}>
-                            <CheckBox></CheckBox>
-                            <Text style={{ marginTop: 5 }}>{note.note}</Text>
+                            <CheckBox
+                                value={note.isChecked == 0 ? false : true}
+                            />
+                            <Text style={[styles.generaldetail, { marginTop: 5 }]}>{note.note}</Text>
                         </View>
                     )
                 })
@@ -132,7 +147,7 @@ class NoteView extends Component {
                             {/* {this.state.note.item.checkList.length ? <Text>found</Text> : <Text>not found</Text>} */}
                             {/* <Text style={styles.generaldetail}>{this.state.note.item.checkList}</Text> */}
                         </View>
-                        {this.state.height === 200 ? <Text style={{ top: 150, left: -35, fontSize: 18 }}>...</Text> : null}
+                        {this.state.height === 200 ? <Text style={{ top: 150, left: 5, fontSize: 18 }}>...</Text> : null}
                     </View>
                 </Ripple>
                 <View>

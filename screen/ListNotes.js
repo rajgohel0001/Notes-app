@@ -11,10 +11,16 @@ export default class ListNotes extends Component{
         };
     }
 
-    componentWillReceiveProps(nextProps) {
-        this.setState({ notes: nextProps.notes });
+    // componentWillReceiveProps(nextProps) {
+    //     this.setState({ notes: nextProps.notes });
+    // }
+    
+    static getDerivedStateFromProps(nextProps, prevState) {
+        return{ 
+            notes: nextProps.notes 
+        }
     }
-
+    
     renderListNotes = () => {
         return(
         <FlatList

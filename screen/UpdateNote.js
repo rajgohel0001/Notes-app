@@ -6,9 +6,11 @@ const { height, width } = Dimensions.get('screen');
 import { deleteNote } from '../controllers/NoteController';
 import RBSheet from "react-native-raw-bottom-sheet";
 
-array = [];
-arraySecond = [];
+let array = [];
+let arraySecond = [];
 let tempCheckValues = [];
+let tempCheckValuesSecond = [];
+let mainArray = [];
 
 export default class UpdateNote extends Component {
     constructor(props) {
@@ -28,7 +30,8 @@ export default class UpdateNote extends Component {
             DisableButton: false,
             isChecked: false,
             checklist: '',
-            checkBoxChecked: []
+            checkBoxChecked: [],
+            checkBoxCheckedSecond: []
         };
         this.animatedValue = new Animated.Value(0);
         this.ArrayValueIndex = 0;
@@ -96,6 +99,54 @@ export default class UpdateNote extends Component {
     //     array
     // }
 
+     /**
+     * 
+     * @param {*} id 
+     * change object value for animated checkbox
+     */
+    objectWithIdSecond(id){
+        console.log('id:',id);
+        const checkBoxArray = this.state.checkBoxCheckedSecond;
+        console.log('checkBoxArray:',checkBoxArray);
+        const isCheckedValue = checkBoxArray[id];
+        console.log("array id ischecked:", arraySecond[id].isChecked )
+        arraySecond[id].isChecked =  isCheckedValue == true ? 1 : 0;
+        console.log("arraySecond id ischecked:", arraySecond[id].isChecked,arraySecond[id] )
+    }
+
+    /**
+     * 
+     * @param {*} id 
+     * @param {*} value 
+     * change animated view checkbox 
+     */
+    checkBoxChangedSecond(id, value) {
+        this.setState({
+            checkBoxCheckedSecond: tempCheckValuesSecond
+        });
+        let tempCheckBoxChecked = this.state.checkBoxCheckedSecond;
+        tempCheckBoxChecked[id] = !value;
+        this.setState({
+            checkBoxCheckedSecond: tempCheckBoxChecked
+        });
+        this.objectWithIdSecond(id);
+    }
+
+     /**
+     * 
+     * @param {*} id 
+     * change object value for checkbox
+     */
+    objectWithId(id){
+        console.log('id:',id);
+        const checkBoxArray = this.state.checkBoxChecked;
+        console.log('checkBoxArray:',checkBoxArray);
+        const isCheckedValue = checkBoxArray[id];
+        console.log("array id ischecked:", array[id].isChecked )
+        array[id].isChecked =  isCheckedValue == true ? 1 : 0;
+        console.log("array id ischecked:", array[id].isChecked,array[id] )
+    }
+
     /**
      * 
      * @param {*} id 
@@ -105,12 +156,13 @@ export default class UpdateNote extends Component {
     checkBoxChanged(id, value) {
         this.setState({
             checkBoxChecked: tempCheckValues
-        })
+        });
         let tempCheckBoxChecked = this.state.checkBoxChecked;
         tempCheckBoxChecked[id] = !value;
         this.setState({
             checkBoxChecked: tempCheckBoxChecked
-        })
+        });
+        this.objectWithId(id);
     }
 
     /**
@@ -166,7 +218,7 @@ export default class UpdateNote extends Component {
         if (!this.state.note.detail && !this.state.note.title) {
             ToastAndroid.show("Enter note details", ToastAndroid.SHORT);
         } else {
-            const mainArray = array.concat(arraySecond);
+            mainArray = array.concat(arraySecond);
             console.log('mainArray:', mainArray);
             this.state.note.checkList = (JSON.stringify(mainArray)).toString();
             console.log('mainArray in string: ', (JSON.stringify(mainArray)).toString());
@@ -188,14 +240,14 @@ export default class UpdateNote extends Component {
          * render animated view
          */
         let RenderAnimatedView = this.state.ViewArray.map((item, key) => {
-            { tempCheckValues[key] = false }
+            { tempCheckValuesSecond[key] = false }
             return (
                 <Animated.View
                     key={key}>
                     <View style={{ flex: 1, flexDirection: 'row' }}>
                         <CheckBox
-                            value={this.state.checkBoxChecked[key]}
-                            onValueChange={() => this.checkBoxChanged(key, this.state.checkBoxChecked[key])}
+                            value={this.state.checkBoxCheckedSecond[key]}
+                            onValueChange={() => this.checkBoxChangedSecond(key, this.state.checkBoxCheckedSecond[key])}
                         />
                         <TextInput
                             placeholder='Note'
@@ -236,8 +288,8 @@ export default class UpdateNote extends Component {
                                 return (
                                     <View style={{ flexDirection: 'row' }}>
                                         <CheckBox
-                                            value={this.state.checkBoxChecked[index]}
-                                            onValueChange={() => this.checkBoxChanged(index, this.state.checkBoxChecked[index])}
+                                            value={note.isChecked == 0 ? false : true}
+                                            onValueChange={() => this.checkBoxChanged(index, note.isChecked == 0 ? false : true)}
                                         />
                                         <TextInput key={index} 
                                             placeholder='Note'

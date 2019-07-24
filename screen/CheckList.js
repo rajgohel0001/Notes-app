@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import { View, ScrollView, TextInput, StyleSheet, Text, ToastAndroid, TouchableOpacity, BackHandler, Animated, CheckBox } from 'react-native';
-import Icon from 'react-native-vector-icons/MaterialIcons';
 import Note from '../models/Note';
 import { createNote } from '../controllers/NoteController';
 
@@ -81,79 +80,50 @@ export default class CheckList extends Component {
         }
     }
 
-    // changeTxt = (text) => {
-    //     let note = this.state.note;
-    //     if (!note) return;
-
-    //     note.detail = text;
-    //     this.setState({ note });
-
-    // let notetext = text;
-    // this.setState({ notes: [...this.state.notes, notetext] });
-    // console.log('notetext: ',this.state.notes);
-
-    // note.noteDetail = this.state.notes
-    // console.log('string: ',this.state.notes.toString());
-    // let Array = [];
-    // Array.push(text);
-    // console.log('Array: ',Array); 
-
-    // note.noteDetail = text
-    // this.setState({ notes: [...this.state.notes, note.noteDetail] });
-    // console.log('notes: ',this.state.notes);
-
-    // let joined = this.state.note.noteDetail.concat(text);
-    // this.setState({notes: joined});
-    // console.log('noteDetail=====',this.state.note.noteDetail);
-    // this.state.note.noteDetail.push(text)
-    // console.log('noteDetail: ', this.state.note.noteDetail);
-    // note.noteDetail = text;
-    // this.setState({'note.noteDetail': this.state.notes})
-    // this.createNote();
-    // }
-
-    changeNote(index, detail) {
-        let checkBoxArray = this.state.checkBoxChecked;
-        console.log(index, detail, checkBoxArray);
-        let isCheckedValue = checkBoxArray[index];
-        const obj = {
-            note: detail,
-            isChecked: isCheckedValue == true ? 1 : 0
+    /**
+     * 
+     * @param {*} id 
+     * change object value for checkbox
+     */
+    objectWithId(id) {
+        console.log('id:', id);
+        const checkBoxArray = this.state.checkBoxChecked;
+        console.log('checkBoxArray:', checkBoxArray);
+        if(array[id] != null){
+            const isCheckedValue = checkBoxArray[id];
+            console.log("array id ischecked:", array[id].isChecked);
+            array[id].isChecked = isCheckedValue == true ? 1 : 0;
+            console.log("array id ischecked:", array[id].isChecked, array[id])
+        } else {
+            ToastAndroid.show("Enter note.", ToastAndroid.SHORT);
         }
-        console.log('object=====', obj);
-        // array.push(obj);
-        array[index] = obj;
-        console.log('array=====', array);
-        // this.setState({
-        //     checklistArr: [...this.state.checklistArr, obj]
-        // })
-        // console.log("arrrrrr=========>",arr,this.state.checklistArr)
-        // console.log("state=========>", this.state.checklistArr)
     }
 
+    /**
+     * 
+     * @param {*} index 
+     * @param {*} detail 
+     * save note text detail
+     */
+    changeNote(index, detail) {
+        const obj = {
+            note: detail,
+            isChecked: 0
+        }
+        console.log('obj:', obj);
+        array[index] = obj;
+        console.log('array:', array);
+    }
+
+    /**
+     * change note title
+     */
     changeTitle = (text) => {
         let note = this.state.note;
         if (!note) return;
 
         note.title = text;
         this.setState({ note });
-    }
-
-    checkListObject(text) {
-        console.log('text=====', text);
-        const obj = {
-            note: text,
-            isChecked: 0
-        }
-        console.log('object=====', obj);
-        // let arr = [];
-        array.push(obj);
-        console.log('array: ', array);
-        this.setState({
-            checklistArr: [...this.state.checklistArr, obj]
-        })
-        // console.log("arrrrrr=========>",arr,this.state.checklistArr)
-        console.log("state=========>", this.state.checklistArr)
     }
 
     /**
@@ -163,22 +133,24 @@ export default class CheckList extends Component {
      * change checkbox value 
      */
     checkBoxChanged(id, value) {
-        this.setState({
-            checkBoxChecked: tempCheckValues
-        })
-        let tempCheckBoxChecked = this.state.checkBoxChecked;
-        tempCheckBoxChecked[id] = !value;
-        this.setState({
-            checkBoxChecked: tempCheckBoxChecked
-        })
-        console.log('checkbox:', this.state.checkBoxChecked);
-    }
+            this.setState({
+                checkBoxChecked: tempCheckValues
+            })
+            let tempCheckBoxChecked = this.state.checkBoxChecked;
+            tempCheckBoxChecked[id] = !value;
+            this.setState({
+                checkBoxChecked: tempCheckBoxChecked
+            })
+            this.objectWithId(id);
+            console.log('checkbox:', this.state.checkBoxChecked);
+        }
 
     render() {
         console.log('view array:', this.state.ViewArray);
         console.log('array index:', this.ArrayValueIndex);
         console.log('note:', this.state.note);
         console.log('hasCheckList:', this.props.navigation.state.params.hasCheckList);
+        console.log('array:',array);
 
         /**
          * render animated view
@@ -196,7 +168,6 @@ export default class CheckList extends Component {
                         <TextInput
                             placeholder='Note'
                             style={[styles.generalFontSize, { bottom: 10, left: 10 }]}
-                            // onBlur={(e) =>{this.checkListObject(e)}}
                             onChangeText={(txt) => this.changeNote(key, txt)}>
                         </TextInput>
                     </View>

@@ -3,7 +3,6 @@ import { StyleSheet, View, TouchableOpacity, Dimensions } from 'react-native';
 const { height, width } = Dimensions.get('screen');
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import ListNotes from './ListNotes';
-import ListCheckList from './ListCheckList';
 import { getAllNotes } from '../controllers/NoteController';
 import { EventEmitter } from 'events';
 
@@ -17,12 +16,19 @@ export default class Home extends Component {
         this.event = new EventEmitter();
     }
 
-    componentWillMount() {
+    componentDidMount() {
         this.initListNotes();
         this.event.addListener('onCreateNote', () => this.initListNotes());
         this.event.addListener('onUpdateNote', () => this.initListNotes());
         this.event.addListener('onDeleteNote', () => this.initListNotes());
     }
+
+    // componentWillMount() {
+    //     this.initListNotes();
+    //     this.event.addListener('onCreateNote', () => this.initListNotes());
+    //     this.event.addListener('onUpdateNote', () => this.initListNotes());
+    //     this.event.addListener('onDeleteNote', () => this.initListNotes());
+    // }
 
     componentWillUnmount() {
         this.event.removeAllListeners();
@@ -53,13 +59,13 @@ export default class Home extends Component {
                         style={{ color: 'black', padding: 15 }}
                     />
                 </TouchableOpacity>
-                <View style={{ width: width, backgroundColor: 'white', elevation: 30, height: 40, bottom: 0 }}>
+                <View style={{ width: 'auto', backgroundColor: 'white', elevation: 30, height: 40, bottom: 0 }}>
                     <TouchableOpacity
                         onPress={() => { this.props.navigation.navigate('CheckList', { event: this.event, hasCheckList: 1 }) }}
                         style={styles.navbar}>
                         <Icon name="check-box"
                             size={30}
-                            style={{ color: 'black', padding: 25, opacity: 0.6 }}
+                            style={{ color: 'black', padding: 25, opacity: 0.6, right: 50 }}
                         />
                     </TouchableOpacity>
                 </View>
