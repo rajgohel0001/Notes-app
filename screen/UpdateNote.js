@@ -5,6 +5,7 @@ import Icon from 'react-native-vector-icons/MaterialIcons';
 const { height, width } = Dimensions.get('screen');
 import { deleteNote } from '../controllers/NoteController';
 import RBSheet from "react-native-raw-bottom-sheet";
+import alertService from '../service/alertService';
 
 let array = [];
 let arraySecond = [];
@@ -95,23 +96,24 @@ export default class UpdateNote extends Component {
         console.log('arraySecond:', arraySecond);
     }
 
-    // insertToArray(txt){
-    //     array
-    // }
-
-     /**
-     * 
-     * @param {*} id 
-     * change object value for animated checkbox
-     */
-    objectWithIdSecond(id){
-        console.log('id:',id);
+    /**
+    * 
+    * @param {*} id 
+    * change object value for animated checkbox
+    */
+    objectWithIdSecond(id) {
+        console.log('id:', id);
         const checkBoxArray = this.state.checkBoxCheckedSecond;
-        console.log('checkBoxArray:',checkBoxArray);
-        const isCheckedValue = checkBoxArray[id];
-        console.log("array id ischecked:", arraySecond[id].isChecked )
-        arraySecond[id].isChecked =  isCheckedValue == true ? 1 : 0;
-        console.log("arraySecond id ischecked:", arraySecond[id].isChecked,arraySecond[id] )
+        console.log('checkBoxArray:', checkBoxArray);
+        if (arraySecond[id] != null) {
+            const isCheckedValue = checkBoxArray[id];
+            console.log("array id ischecked:", arraySecond[id].isChecked)
+            arraySecond[id].isChecked = isCheckedValue == true ? 1 : 0;
+            console.log("arraySecond id ischecked:", arraySecond[id].isChecked, arraySecond[id]);
+        } else {
+            // ToastAndroid.show("Enter note.", ToastAndroid.SHORT);
+            alertService.alerAndToast("Enter note in checklist");
+        }
     }
 
     /**
@@ -132,19 +134,19 @@ export default class UpdateNote extends Component {
         this.objectWithIdSecond(id);
     }
 
-     /**
-     * 
-     * @param {*} id 
-     * change object value for checkbox
-     */
-    objectWithId(id){
-        console.log('id:',id);
+    /**
+    * 
+    * @param {*} id 
+    * change object value for checkbox
+    */
+    objectWithId(id) {
+        console.log('id:', id);
         const checkBoxArray = this.state.checkBoxChecked;
-        console.log('checkBoxArray:',checkBoxArray);
+        console.log('checkBoxArray:', checkBoxArray);
         const isCheckedValue = checkBoxArray[id];
-        console.log("array id ischecked:", array[id].isChecked )
-        array[id].isChecked =  isCheckedValue == true ? 1 : 0;
-        console.log("array id ischecked:", array[id].isChecked,array[id] )
+        console.log("array id ischecked:", array[id].isChecked)
+        array[id].isChecked = isCheckedValue == true ? 1 : 0;
+        console.log("array id ischecked:", array[id].isChecked, array[id])
     }
 
     /**
@@ -207,7 +209,7 @@ export default class UpdateNote extends Component {
 
         note.title = text;
         this.setState({ note })
-        this.updateNote();
+        // this.updateNote();
     }
 
     /**
@@ -215,27 +217,33 @@ export default class UpdateNote extends Component {
      * update note
      */
     updateNote = () => {
-        if (!this.state.note.detail && !this.state.note.title) {
-            ToastAndroid.show("Enter note details", ToastAndroid.SHORT);
-        } else {
-            mainArray = array.concat(arraySecond);
-            console.log('mainArray:', mainArray);
-            this.state.note.checkList = (JSON.stringify(mainArray)).toString();
-            console.log('mainArray in string: ', (JSON.stringify(mainArray)).toString());
-            updateNote(this.state.note).then(({ result, message }) => {
-                ToastAndroid.show(message, ToastAndroid.SHORT);
-                if (result) {
-                    if (this.state.event)
-                        this.state.event.emit('onUpdateNote');
-                }
-                // this.props.navigation.navigate('Home');
-            });
+        console.log('note in updateNote:', this.state.note);
+        mainArray = array.concat(arraySecond);
+        console.log('mainArray:', mainArray);
+        let object = { ...this.state.note };
+        console.log('object:', object);
+        if (!object.detail.length) {
+            object.checkList = (JSON.stringify(mainArray)).toString();
         }
+        console.log('after parsing the object:', object);
+        updateNote(object).then(({ result, message }) => {
+            // ToastAndroid.show(message, ToastAndroid.SHORT);
+            if (result) {
+                if (this.state.event) {
+                    this.state.event.emit('onUpdateNote');
+                }
+            }
+            array = [];
+            arraySecond = [];
+            mainArray = [];
+            // this.props.navigation.navigate('Home');
+        });
     }
 
     render() {
-        console.log('update note: ', this.state.note);
-
+        console.log('update note:', this.state.note);
+        console.log('checkBoxChecked:', this.state.checkBoxChecked);
+        console.log('checkBoxCheckedSecond:', this.state.checkBoxCheckedSecond);
         /**
          * render animated view
          */
@@ -291,9 +299,9 @@ export default class UpdateNote extends Component {
                                             value={note.isChecked == 0 ? false : true}
                                             onValueChange={() => this.checkBoxChanged(index, note.isChecked == 0 ? false : true)}
                                         />
-                                        <TextInput key={index} 
+                                        <TextInput key={index}
                                             placeholder='Note'
-                                            style={[styles.generalFontSize, { bottom: 10, left: 10 }]}
+                                            style={[styles.generalFontSize, { bottom: 10, left: 10, textDecorationLine: note.isChecked == 0 ? 'none' : 'line-through', textDecorationStyle: 'solid' }]}
                                             onChangeText={(txt) => this.changeNote(index, txt)}>
                                             {note.note}
                                         </TextInput>
@@ -359,7 +367,7 @@ const styles = StyleSheet.create({
         height: 'auto',
     },
     generalFontSize: {
-        fontSize: 20,
+        fontSize: 20
     },
     titleFontSize: {
         fontSize: 30,

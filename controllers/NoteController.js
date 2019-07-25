@@ -102,7 +102,7 @@ export const deleteNote = (note) => {
                     msg.message = `Note Deleted successfully!`;
                 } else {
                     msg.result = false;
-                    msg.message = `Not found note with id=${note.noteId}`;
+                    msg.message = `Note not found`;
                 }
                 resolve({ result: msg.result, message: msg.message });
             }, (error) => {

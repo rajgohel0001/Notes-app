@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { StyleSheet, View, TextInput, ScrollView, ToastAndroid, Keyboard, BackHandler } from 'react-native';
 import Note from '../models/Note';
 import { createNote } from '../controllers/NoteController';
+import alertService from '../service/alertService';
 
 export default class AddNote extends Component {
 
@@ -50,14 +51,16 @@ export default class AddNote extends Component {
      */
     createNote = () => {
         console.log('this.state.note: ', this.state.note);
-        if (!this.state.note.detail) {
-            ToastAndroid.show("Empty note discarded.", ToastAndroid.SHORT);
+        if (!this.state.note.detail && !this.state.note.title) {
+            // ToastAndroid.show("Empty note discarded.", ToastAndroid.SHORT);
+            alertService.alerAndToast("Empty note discarded");
         } else {
             this.state.note.hasCheckList = this.props.navigation.state.params.hasCheckList;
             createNote(this.state.note).then(({ result, message }) => {
                 // console.log('result:', result);
                 // console.log('state', this.state.note);
-                ToastAndroid.show(message, ToastAndroid.SHORT);
+                // ToastAndroid.show(message, ToastAndroid.SHORT);
+                alertService.alerAndToast(message);
                 console.log('meaasge:', message);
                 if (result) {
                     this.setState({ note: new Note() });

@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { StyleSheet, View, TouchableOpacity, Dimensions } from 'react-native';
+import { StyleSheet, View, TouchableOpacity, Dimensions, Text } from 'react-native';
 const { height, width } = Dimensions.get('screen');
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import ListNotes from './ListNotes';
@@ -37,7 +37,7 @@ export default class Home extends Component {
     initListNotes = () => {
         getAllNotes().then((respnose) => {
             // getAllNotes().then(({ result, message }) => this.setState({ notes: result }));
-            this.setState({ notes: respnose.result});
+            this.setState({ notes: respnose.result });
             // console.log('respnose: ', respnose);
         }).catch((error) => {
             console.log('errror: ', error);
@@ -48,6 +48,12 @@ export default class Home extends Component {
         console.log('notes: ', this.state.notes);
         return (
             <>
+                {!this.state.notes.length ?
+                    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+                        <Text style={{fontSize: 20}}>
+                            Notes you add appear here
+                    </Text>
+                    </View> : null}
                 <View style={styles.container}>
                     <ListNotes notes={this.state.notes} event={this.event} />
                 </View>

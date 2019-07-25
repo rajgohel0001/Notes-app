@@ -5,6 +5,7 @@ import Ripple from 'react-native-material-ripple';
 import RBSheet from "react-native-raw-bottom-sheet";
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import { deleteNote } from '../controllers/NoteController';
+import alertService from '../service/alertService';
 
 class NoteView extends Component {
     constructor(props) {
@@ -46,7 +47,8 @@ class NoteView extends Component {
         if (!this.state.note.item) return;
 
         deleteNote(this.state.note.item).then(({ result, message }) => {
-            ToastAndroid.show(message, ToastAndroid.SHORT);
+            // ToastAndroid.show(message, ToastAndroid.SHORT);
+            alertService.alerAndToast(message);
             if (result) {
                 if (this.state.event)
                     this.state.event.emit('onDeleteNote');
@@ -75,7 +77,13 @@ class NoteView extends Component {
                             <CheckBox
                                 value={note.isChecked == 0 ? false : true}
                             />
-                            <Text style={[styles.generaldetail, { marginTop: 5 }]}>{note.note}</Text>
+                            <Text style={[styles.generaldetail,
+                            {
+                                marginTop: 5, textDecorationLine: note.isChecked == 0 ? 'none' : 'line-through',
+                                textDecorationStyle: 'solid'
+                            }]}>
+                                {note.note}
+                            </Text>
                         </View>
                     )
                 })
@@ -91,10 +99,6 @@ class NoteView extends Component {
                 //         )
                 //     }}
                 // ></FlatList>
-            )
-        } else {
-            return (
-                <Text>Hello</Text>
             )
         }
     }

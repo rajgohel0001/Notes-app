@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { View, ScrollView, TextInput, StyleSheet, Text, ToastAndroid, TouchableOpacity, BackHandler, Animated, CheckBox } from 'react-native';
 import Note from '../models/Note';
 import { createNote } from '../controllers/NoteController';
+import alertService from '../service/alertService';
 
 let array = [];
 let tempCheckValues = [];
@@ -57,24 +58,27 @@ export default class CheckList extends Component {
      * add note
      */
     createNote = () => {
+        this.state.note.checkList = (JSON.stringify(array)).toString();
         console.log("this.state.note: ", this.state.note)
-        if (!this.state.note.title) {
-            ToastAndroid.show("Enter note title.", ToastAndroid.SHORT);
+        if (!this.state.note.title && this.state.note.checkList != null) {
+            // ToastAndroid.show("Empty note discarded.", ToastAndroid.SHORT);
+            alertService.alerAndToast("Empty note discarded");
         } else {
-            this.state.note.checkList = (JSON.stringify(array)).toString();
             this.state.note.hasCheckList = this.props.navigation.state.params.hasCheckList;
             console.log("string: ", JSON.stringify(array));
             console.log("final note: ", typeof this.state.note.checkList, this.state.note);
             createNote(this.state.note).then(({ result, message }) => {
                 // console.log('result:', result);
                 // console.log('state', this.state.note);
-                ToastAndroid.show(message, ToastAndroid.SHORT);
+                // ToastAndroid.show(message, ToastAndroid.SHORT);
+                alertService.alerAndToast(message);
                 this.props.navigation.state.params.event.emit('onCreateNote');
                 // console.log('meaasge:', message);
                 if (result) {
                     this.setState({ 'note.noteDetail': '' });
                     // this.props.navigation.state.params.event.emit('onCreateNote');
                 }
+                array = [];
                 // this.props.navigation.navigate('Home');
             });
         }
@@ -89,13 +93,14 @@ export default class CheckList extends Component {
         console.log('id:', id);
         const checkBoxArray = this.state.checkBoxChecked;
         console.log('checkBoxArray:', checkBoxArray);
-        if(array[id] != null){
+        if (array[id] != null) {
             const isCheckedValue = checkBoxArray[id];
             console.log("array id ischecked:", array[id].isChecked);
             array[id].isChecked = isCheckedValue == true ? 1 : 0;
             console.log("array id ischecked:", array[id].isChecked, array[id])
         } else {
-            ToastAndroid.show("Enter note.", ToastAndroid.SHORT);
+            // ToastAndroid.show("Enter note.", ToastAndroid.SHORT);
+            alertService.alerAndToast("Enter note in checklist");
         }
     }
 
@@ -133,24 +138,24 @@ export default class CheckList extends Component {
      * change checkbox value 
      */
     checkBoxChanged(id, value) {
-            this.setState({
-                checkBoxChecked: tempCheckValues
-            })
-            let tempCheckBoxChecked = this.state.checkBoxChecked;
-            tempCheckBoxChecked[id] = !value;
-            this.setState({
-                checkBoxChecked: tempCheckBoxChecked
-            })
-            this.objectWithId(id);
-            console.log('checkbox:', this.state.checkBoxChecked);
-        }
+        this.setState({
+            checkBoxChecked: tempCheckValues
+        })
+        let tempCheckBoxChecked = this.state.checkBoxChecked;
+        tempCheckBoxChecked[id] = !value;
+        this.setState({
+            checkBoxChecked: tempCheckBoxChecked
+        })
+        this.objectWithId(id);
+        console.log('checkbox:', this.state.checkBoxChecked);
+    }
 
     render() {
         console.log('view array:', this.state.ViewArray);
         console.log('array index:', this.ArrayValueIndex);
         console.log('note:', this.state.note);
         console.log('hasCheckList:', this.props.navigation.state.params.hasCheckList);
-        console.log('array:',array);
+        console.log('array:', array);
 
         /**
          * render animated view
