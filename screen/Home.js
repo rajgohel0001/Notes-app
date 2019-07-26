@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { StyleSheet, View, TouchableOpacity, Dimensions, Text } from 'react-native';
+import { StyleSheet, View, TouchableOpacity, Dimensions, Text, Image } from 'react-native';
 const { height, width } = Dimensions.get('screen');
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import ListNotes from './ListNotes';
@@ -50,13 +50,14 @@ export default class Home extends Component {
             <>
                 {!this.state.notes.length ?
                     <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+                        <Image style={{ width: 100, height: 100 }} source={require('../assets/images/notes4.png')} />
                         <Text style={{ fontSize: 20 }}>
                             Notes you add appear here
                     </Text>
-                    </View> : null}
-                <View style={styles.container}>
-                    <ListNotes notes={this.state.notes} event={this.event} />
-                </View>
+                    </View> :
+                    <View style={styles.container}>
+                        <ListNotes notes={this.state.notes} event={this.event} />
+                    </View>}
                 <TouchableOpacity
                     onPress={() => { this.props.navigation.navigate('AddNote', { event: this.event, hasCheckList: 0 }) }}
                     style={[styles.floatingMenuButtonStyle, { backgroundColor: '#fff', elevation: 25, borderRadius: 40, height: 60, width: 60 }]}>
