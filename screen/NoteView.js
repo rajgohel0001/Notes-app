@@ -131,7 +131,7 @@ class NoteView extends Component {
                             this.setState({ height: height })
                         }}>
                         <View style={{ flexDirection: 'column' }}>
-                            <Text style={styles.generalFontSize}>{this.state.note.item.title}</Text>
+                            {this.state.note.item.title ? <Text style={styles.generalFontSize}>{this.state.note.item.title}</Text> : null}
                             {this.state.note.item.hasCheckList == 0 ?
                                 <Text style={styles.generaldetail}>{this.state.note.item.detail}</Text> : null
                                 // <FlatList
