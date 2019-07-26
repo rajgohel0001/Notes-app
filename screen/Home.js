@@ -50,7 +50,7 @@ export default class Home extends Component {
             <>
                 {!this.state.notes.length ?
                     <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-                        <Text style={{fontSize: 20}}>
+                        <Text style={{ fontSize: 20 }}>
                             Notes you add appear here
                     </Text>
                     </View> : null}
@@ -65,15 +65,19 @@ export default class Home extends Component {
                         style={{ color: 'black', padding: 15 }}
                     />
                 </TouchableOpacity>
-                <View style={{ width: 'auto', backgroundColor: 'white', elevation: 30, height: 40, bottom: 0 }}>
-                    <TouchableOpacity
-                        onPress={() => { this.props.navigation.navigate('CheckList', { event: this.event, hasCheckList: 1 }) }}
-                        style={styles.navbar}>
-                        <Icon name="check-box"
-                            size={30}
-                            style={{ color: 'black', padding: 25, opacity: 0.6, right: 50 }}
-                        />
-                    </TouchableOpacity>
+                <View style={{ flexDirection: 'row', width: 'auto', backgroundColor: 'white', elevation: 30, height: 40, bottom: 0 }}>
+                    <View style={{ flex: 4 }}></View>
+                    <View style={{ flex: 3 }}>
+                        <TouchableOpacity
+                            onPress={() => { this.props.navigation.navigate('CheckList', { event: this.event, hasCheckList: 1 }) }}
+                            style={styles.navbar}>
+                            <Icon name="check-box"
+                                size={30}
+                                style={{ color: 'black', padding: 25, opacity: 0.6 }}
+                            />
+                        </TouchableOpacity>
+                    </View>
+                    <View style={{ flex: 4 }}></View>
                 </View>
             </>
         )
@@ -88,11 +92,12 @@ const styles = StyleSheet.create({
         right: 15,
     },
     navbar: {
-        alignSelf: 'flex-end',
-        position: 'absolute',
-        bottom: 0,
-        right: 0,
-        height: 60,
+        // alignSelf: 'flex-end',
+        alignItems: 'center',
+        // justifyContent: 'center',
+        // position: 'absolute',
+        bottom: 20,
+        // height: 60,
     },
     container: {
         flex: 1,

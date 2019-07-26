@@ -61,7 +61,8 @@ export default class CheckList extends Component {
         this.state.note.checkList = (JSON.stringify(array)).toString();
         console.log("this.state.note: ", this.state.note)
         console.log('cond: ', !this.state.note.title, this.state.note.checkList != null, this.state.note.checkList.length != 0);
-        if (!this.state.note.title && (!this.state.note.checkList || !this.state.note.checkList.length)) {
+        console.log('checklist lebght:',this.state.note.checkList.length);
+        if (!this.state.note.title && (!this.state.note.checkList || this.state.note.checkList.length == 2)) {
             // ToastAndroid.show("Empty note discarded.", ToastAndroid.SHORT);
             alertService.alerAndToast("Empty note discarded");
         } else {
