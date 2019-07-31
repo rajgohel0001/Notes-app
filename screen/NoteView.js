@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { StyleSheet, Text, View, ToastAndroid, FlatList, TouchableHighlight } from 'react-native';
+import { StyleSheet, Text, View, Platform, FlatList } from 'react-native';
 import { withNavigation } from 'react-navigation';
 import Ripple from 'react-native-material-ripple';
 import Icon from 'react-native-vector-icons/MaterialIcons';
@@ -44,6 +44,7 @@ class NoteView extends Component {
      * delete note
      */
     deleteNote = () => {
+        this.RBSheet.close();
         this.setState({ isVisible: true })
         if (!this.state.note.item) return;
 
@@ -79,7 +80,7 @@ class NoteView extends Component {
                             />
                             <Text style={[styles.generaldetail,
                             {
-                                marginTop: 5, textDecorationLine: note.isChecked == 0 ? 'none' : 'line-through',
+                                marginTop: Platform.OS === 'ios' ? 5 : null, textDecorationLine: note.isChecked == 0 ? 'none' : 'line-through',
                                 textDecorationStyle: 'solid'
                             }]}>
                                 {note.note}
@@ -176,7 +177,7 @@ class NoteView extends Component {
                                 size={30}
                                 onPress={this.deleteNote}
                             />
-                            <Text style={{ fontSize: 20 }} onPress={this.deleteNote}>Delete</Text>
+                            <Text style={{ fontSize: 20, width: '100%' }} onPress={this.deleteNote}>Delete</Text>
                         </View>
                     </RBSheet>
                 </View>

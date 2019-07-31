@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
-import { StyleSheet, TextInput, Text, View, TouchableOpacity, ScrollView, ToastAndroid, Dimensions, Animated, BackHandler } from 'react-native';
+import { StyleSheet, TextInput, Text, View, TouchableOpacity, ScrollView, Platform, Dimensions, Animated, BackHandler } from 'react-native';
 import { updateNote } from '../controllers/NoteController';
 import Icon from 'react-native-vector-icons/MaterialIcons';
-const { height, width } = Dimensions.get('screen');
+// const { height, width } = Dimensions.get('screen');
 import { deleteNote } from '../controllers/NoteController';
 import RBSheet from "react-native-raw-bottom-sheet";
 import alertService from '../service/alertService';
@@ -256,17 +256,17 @@ export default class UpdateNote extends Component {
                     key={key}>
                     <View style={{ flex: 1, flexDirection: 'row', marginBottom: 5 }}>
                         <CheckBox
-                            style={{marginTop: 7}}
+                            style={styles.checkboxView}
                             isChecked={this.state.checkBoxCheckedSecond[key]}
                             onClick={() => this.checkBoxChangedSecond(key, this.state.checkBoxCheckedSecond[key])}
                         />
                         <TextInput
                             placeholder='Note'
-                            style={[styles.generalFontSize, { left: 10 }]}
+                            style={[styles.generalFontSize, { left: 10, width: '100%' }]}
                             // onBlur={(e) =>{this.checkListObject(e)}}
                             // onFocus={(txt) => this.insertToArray(txt)}
                             onChangeText={(txt) => this.changeNoteSecondArray(key, txt)}
-                            autoFocus= {true}>
+                            autoFocus={true}>
                         </TextInput>
                     </View>
                 </Animated.View>
@@ -278,24 +278,24 @@ export default class UpdateNote extends Component {
 
         return (
             <>
+                <Header style={styles.header}>
+                    <View style={{ flex: 2 }}>
+                        <TouchableOpacity
+                            style={styles.iconButton}
+                            onPress={() => { this.updateNote(); this.props.navigation.navigate('Home') }}>
+                            <Icon name="arrow-back" size={28} color="#606060" />
+                        </TouchableOpacity>
+                    </View>
+                    <View style={{ flex: 8 }}></View>
+                    <View style={{ flex: 2 }}>
+                        <TouchableOpacity
+                            style={styles.iconButton}
+                            onPress={() => { this.updateNote(); this.props.navigation.navigate('Home') }}>
+                            <Icon name="check" size={28} color="#606060" />
+                        </TouchableOpacity>
+                    </View>
+                </Header>
                 <View style={styles.container}>
-                    <Header style={styles.header}>
-                        <View style={{ flex: 2 }}>
-                            <TouchableOpacity
-                                style={styles.iconButton}
-                                onPress={() => { this.updateNote(); this.props.navigation.navigate('Home') }}>
-                                <Icon name="arrow-back" size={28} color="#606060" />
-                            </TouchableOpacity>
-                        </View>
-                        <View style={{ flex: 8 }}></View>
-                        <View style={{ flex: 2 }}>
-                            <TouchableOpacity
-                                style={styles.iconButton}
-                                onPress={() => { this.updateNote(); this.props.navigation.navigate('Home') }}>
-                                <Icon name="check" size={28} color="#606060" />
-                            </TouchableOpacity>
-                        </View>
-                    </Header>
                     <ScrollView>
                         <TextInput
                             style={[styles.input, styles.titleFontSize]}
@@ -315,17 +315,17 @@ export default class UpdateNote extends Component {
                             this.state.note.checkList.map((note, index) => {
                                 { tempCheckValues[index] = false }
                                 return (
-                                    <View style={{ flexDirection: 'row', marginBottom: 5 }}>
+                                    <View style={{ flex: 1, flexDirection: 'row', marginBottom: Platform.OS === 'ios' ? 5 : null }}>
                                         <CheckBox
-                                            style={{marginTop: 7}}
+                                            style={styles.checkboxView}
                                             isChecked={note.isChecked == 0 ? false : true}
                                             onClick={() => this.checkBoxChanged(index, note.isChecked == 0 ? false : true)}
                                         />
                                         <TextInput key={index}
                                             placeholder='Note'
-                                            style={[styles.generalFontSize, { left: 10, textDecorationLine: note.isChecked == 0 ? 'none' : 'line-through', textDecorationStyle: 'solid' }]}
+                                            style={[styles.generalFontSize, { left: 10, textDecorationLine: note.isChecked == 0 ? 'none' : 'line-through', textDecorationStyle: 'solid', width: '100%' }]}
                                             onChangeText={(txt) => this.changeNote(index, txt)}
-                                            autoFocus= {true}>
+                                            autoFocus={true}>
                                             {note.note}
                                         </TextInput>
                                     </View>
@@ -340,7 +340,7 @@ export default class UpdateNote extends Component {
                             : null}
                     </ScrollView>
                 </View>
-                <View style={{ width: width, backgroundColor: 'white', elevation: 30, height: 40, bottom: 0 }}>
+                <View style={{ width: '100%', backgroundColor: 'white', elevation: 30, height: 40, bottom: 0 }}>
                     <TouchableOpacity
                         onPress={() => { this.props.navigation.navigate('AddNote', { event: this.event }) }}
                         style={styles.floatingMenuButtonStyle}>
@@ -416,6 +416,11 @@ const styles = StyleSheet.create({
     },
     iconButton: {
         height: 50,
-        width: 50
+        width: 50,
+        top: Platform.OS === 'ios' ? null : 20
+    },
+    checkboxView: {
+        marginTop: Platform.OS === 'ios' ? 7 : 20,
+        right: Platform.OS === 'ios' ? 5 : null
     }
 });

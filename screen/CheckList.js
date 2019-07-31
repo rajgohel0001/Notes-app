@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, ScrollView, TextInput, StyleSheet, Text, ToastAndroid, TouchableOpacity, BackHandler, Animated } from 'react-native';
+import { View, ScrollView, TextInput, StyleSheet, Text, Platform, TouchableOpacity, BackHandler, Animated } from 'react-native';
 import { Header } from "native-base";
 import Note from '../models/Note';
 import Icon from 'react-native-vector-icons/MaterialIcons';
@@ -64,7 +64,7 @@ export default class CheckList extends Component {
         this.state.note.checkList = (JSON.stringify(array)).toString();
         console.log("this.state.note: ", this.state.note)
         console.log('cond: ', !this.state.note.title, this.state.note.checkList != null, this.state.note.checkList.length != 0);
-        console.log('checklist lebght:',this.state.note.checkList.length);
+        console.log('checklist lebght:', this.state.note.checkList.length);
         if (!this.state.note.title && (!this.state.note.checkList || this.state.note.checkList.length == 2)) {
             // ToastAndroid.show("Empty note discarded.", ToastAndroid.SHORT);
             alertService.alerAndToast("Empty note discarded");
@@ -121,7 +121,7 @@ export default class CheckList extends Component {
             isChecked: 0
         }
         console.log('obj:', obj);
-        if(obj.detail != ''){
+        if (obj.detail != '') {
             array[index] = obj;
         }
         console.log('array:', array);
@@ -174,16 +174,16 @@ export default class CheckList extends Component {
                     key={key}>
                     <View style={{ flex: 1, flexDirection: 'row', marginBottom: 5 }}>
                         <CheckBox
-                            style={{marginTop: 7, right: 5}}
+                            style={styles.checkboxView}
                             isChecked={this.state.checkBoxChecked[key]}
                             onClick={() => this.checkBoxChanged(key, this.state.checkBoxChecked[key])}
                         />
                         <TextInput
                             placeholder='Note'
-                            style={[styles.generalFontSize, { left: 10 }]}
+                            style={[styles.generalFontSize, { left: 10, width: '100%' }]}
                             onChangeText={(txt) => this.changeNote(key, txt)}
                             onSubmitEditing={this.createNote}
-                            autoFocus= {true}>
+                            autoFocus={true}>
                         </TextInput>
                     </View>
                 </Animated.View>
@@ -191,38 +191,40 @@ export default class CheckList extends Component {
         });
 
         return (
-            <View style={styles.container}>
+            <>
                 <Header style={styles.header}>
                     <View style={{ flex: 2 }}>
-                            <TouchableOpacity
-                                style={styles.iconButton}
-                                onPress={() => { this.createNote(); this.props.navigation.navigate('Home') }}>
-                                <Icon name="arrow-back" size={28} color="#606060" />
-                            </TouchableOpacity>
-                        </View>
-                        <View style={{ flex: 8 }}></View>
-                        <View style={{ flex: 2 }}>
-                            <TouchableOpacity
-                                style={styles.iconButton}
-                                onPress={() => { this.createNote(); this.props.navigation.navigate('Home') }}>
-                                <Icon name="check" size={28} color="#606060" />
-                            </TouchableOpacity>
-                        </View>
-                </Header>
-                <ScrollView style={{marginTop: 10}}>
-                    <TextInput
-                        style={[styles.input, styles.titleFontSize]}
-                        placeholder='Title'
-                        onChangeText={(text) => this.changeTitle(text)}
-                    />
-                    <View style={{ flex: 1, padding: 2 }}>
-                        {RenderAnimatedView}
+                        <TouchableOpacity
+                            style={styles.iconButton}
+                            onPress={() => { this.createNote(); this.props.navigation.navigate('Home') }}>
+                            <Icon name="arrow-back" size={28} color="#606060" />
+                        </TouchableOpacity>
                     </View>
-                    <TouchableOpacity onPress={this.AddNewView}>
-                        <Text style={styles.generalFontSize}> + List item </Text>
-                    </TouchableOpacity>
-                </ScrollView>
-            </View>
+                    <View style={{ flex: 8 }}></View>
+                    <View style={{ flex: 2 }}>
+                        <TouchableOpacity
+                            style={styles.iconButton}
+                            onPress={() => { this.createNote(); this.props.navigation.navigate('Home') }}>
+                            <Icon name="check" size={28} color="#606060" />
+                        </TouchableOpacity>
+                    </View>
+                </Header>
+                <View style={styles.container}>
+                    <ScrollView style={{ marginTop: 10 }}>
+                        <TextInput
+                            style={[styles.input, styles.titleFontSize]}
+                            placeholder='Title'
+                            onChangeText={(text) => this.changeTitle(text)}
+                        />
+                        <View style={{ flex: 1, padding: 2 }}>
+                            {RenderAnimatedView}
+                        </View>
+                        <TouchableOpacity onPress={this.AddNewView}>
+                            <Text style={styles.generalFontSize}> + List item </Text>
+                        </TouchableOpacity>
+                    </ScrollView>
+                </View>
+            </>
         )
     }
 }
@@ -241,12 +243,17 @@ const styles = StyleSheet.create({
     },
     iconButton: {
         height: 50,
-        width: 50
+        width: 50,
+        top: Platform.OS === 'ios' ? null : 20
     },
     generalFontSize: {
         fontSize: 30,
     },
     titleFontSize: {
         fontSize: 40,
+    },
+    checkboxView: {
+        marginTop: Platform.OS === 'ios' ? 7 : 20,
+        right: Platform.OS === 'ios' ? 5 : null
     }
 });
