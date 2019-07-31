@@ -1,11 +1,12 @@
 import React, { Component } from 'react';
-import { StyleSheet, Text, View, ToastAndroid, FlatList, CheckBox } from 'react-native';
+import { StyleSheet, Text, View, ToastAndroid, FlatList, TouchableHighlight } from 'react-native';
 import { withNavigation } from 'react-navigation';
 import Ripple from 'react-native-material-ripple';
-import RBSheet from "react-native-raw-bottom-sheet";
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import { deleteNote } from '../controllers/NoteController';
 import alertService from '../service/alertService';
+import CheckBox from 'react-native-check-box';
+import RBSheet from "react-native-raw-bottom-sheet";
 
 class NoteView extends Component {
     constructor(props) {
@@ -48,11 +49,10 @@ class NoteView extends Component {
 
         deleteNote(this.state.note.item).then(({ result, message }) => {
             // ToastAndroid.show(message, ToastAndroid.SHORT);
-            alertService.alerAndToast(message);
+            // alertService.alerAndToast(message);
             if (result) {
                 if (this.state.event)
                     this.state.event.emit('onDeleteNote');
-                this.RBSheet.close();
                 // this.props.navigation.navigate('Home');
             }
         });
@@ -75,7 +75,7 @@ class NoteView extends Component {
                     return (
                         <View key={index} style={{ flexDirection: 'row' }}>
                             <CheckBox
-                                value={note.isChecked == 0 ? false : true}
+                                isChecked={note.isChecked == 0 ? false : true}
                             />
                             <Text style={[styles.generaldetail,
                             {
@@ -159,6 +159,7 @@ class NoteView extends Component {
                         ref={ref => {
                             this.RBSheet = ref;
                         }}
+                        closeOnDragDown={true}
                         height={100}
                         duration={250}
                         customStyles={{

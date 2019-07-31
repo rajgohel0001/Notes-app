@@ -1,9 +1,15 @@
 import Note from '../models/Note';
 import Message from '../models/Message';
-import Checklist from '../models/CheckList';
+import { Platform } from 'react-native';
 
 const SQLite = require('react-native-sqlite-storage');
-const sqlite = SQLite.openDatabase({ name: 'notes-db', createFromLocation: '~database/notes-db.sqlite' })
+// const sqlite = SQLite.openDatabase({ name: 'note-db', createFromLocation: '~www/note-db.sqlite' })
+
+if (Platform.OS === 'ios') {
+    sqlite = SQLite.openDatabase({ name: 'note-db.sqlite', createFromLocation: 1 }, (open) => { }, (e) => { });
+} else {
+    sqlite = SQLite.openDatabase({ name: 'note-db.sqlite', createFromLocation: '~www/note-db.sqlite', location: 'Library' }, (open) => { }, (e) => { });
+}
 
 /**
  * @param {*} note
@@ -63,7 +69,7 @@ export const getAllNotes = () => {
                         // console.log('item====1', typeof itemCheckList, JSON.parse(JSON.stringify(itemCheckList)));
                         // console.log('222: ', JSON.parse(item.checkList));
                         // console.log('item====2', JSON.parse(item.checkList), typeof (JSON.parse(JSON.stringify(item.checkList))));
-                        // console.log('item: full: ', item);
+                        console.log('item: full: ', item);
                         let note = new Note(item.noteId, item.title, item.detail, item.hasCheckList, item.checkList);
                         msg.result.push(note);
                     }

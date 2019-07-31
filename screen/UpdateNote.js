@@ -1,11 +1,13 @@
 import React, { Component } from 'react';
-import { StyleSheet, TextInput, Text, View, TouchableOpacity, ScrollView, ToastAndroid, Dimensions, Animated, BackHandler, CheckBox } from 'react-native';
+import { StyleSheet, TextInput, Text, View, TouchableOpacity, ScrollView, ToastAndroid, Dimensions, Animated, BackHandler } from 'react-native';
 import { updateNote } from '../controllers/NoteController';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 const { height, width } = Dimensions.get('screen');
 import { deleteNote } from '../controllers/NoteController';
 import RBSheet from "react-native-raw-bottom-sheet";
 import alertService from '../service/alertService';
+import CheckBox from 'react-native-check-box';
+import { Header } from "native-base";
 
 let array = [];
 let arraySecond = [];
@@ -252,17 +254,19 @@ export default class UpdateNote extends Component {
             return (
                 <Animated.View
                     key={key}>
-                    <View style={{ flex: 1, flexDirection: 'row' }}>
+                    <View style={{ flex: 1, flexDirection: 'row', marginBottom: 5 }}>
                         <CheckBox
-                            value={this.state.checkBoxCheckedSecond[key]}
-                            onValueChange={() => this.checkBoxChangedSecond(key, this.state.checkBoxCheckedSecond[key])}
+                            style={{marginTop: 7}}
+                            isChecked={this.state.checkBoxCheckedSecond[key]}
+                            onClick={() => this.checkBoxChangedSecond(key, this.state.checkBoxCheckedSecond[key])}
                         />
                         <TextInput
                             placeholder='Note'
-                            style={[styles.generalFontSize, { bottom: 10, left: 10 }]}
+                            style={[styles.generalFontSize, { left: 10 }]}
                             // onBlur={(e) =>{this.checkListObject(e)}}
                             // onFocus={(txt) => this.insertToArray(txt)}
-                            onChangeText={(txt) => this.changeNoteSecondArray(key, txt)}>
+                            onChangeText={(txt) => this.changeNoteSecondArray(key, txt)}
+                            autoFocus= {true}>
                         </TextInput>
                     </View>
                 </Animated.View>
@@ -275,6 +279,23 @@ export default class UpdateNote extends Component {
         return (
             <>
                 <View style={styles.container}>
+                    <Header style={styles.header}>
+                        <View style={{ flex: 2 }}>
+                            <TouchableOpacity
+                                style={styles.iconButton}
+                                onPress={() => { this.updateNote(); this.props.navigation.navigate('Home') }}>
+                                <Icon name="arrow-back" size={28} color="#606060" />
+                            </TouchableOpacity>
+                        </View>
+                        <View style={{ flex: 8 }}></View>
+                        <View style={{ flex: 2 }}>
+                            <TouchableOpacity
+                                style={styles.iconButton}
+                                onPress={() => { this.updateNote(); this.props.navigation.navigate('Home') }}>
+                                <Icon name="check" size={28} color="#606060" />
+                            </TouchableOpacity>
+                        </View>
+                    </Header>
                     <ScrollView>
                         <TextInput
                             style={[styles.input, styles.titleFontSize]}
@@ -294,15 +315,17 @@ export default class UpdateNote extends Component {
                             this.state.note.checkList.map((note, index) => {
                                 { tempCheckValues[index] = false }
                                 return (
-                                    <View style={{ flexDirection: 'row' }}>
+                                    <View style={{ flexDirection: 'row', marginBottom: 5 }}>
                                         <CheckBox
-                                            value={note.isChecked == 0 ? false : true}
-                                            onValueChange={() => this.checkBoxChanged(index, note.isChecked == 0 ? false : true)}
+                                            style={{marginTop: 7}}
+                                            isChecked={note.isChecked == 0 ? false : true}
+                                            onClick={() => this.checkBoxChanged(index, note.isChecked == 0 ? false : true)}
                                         />
                                         <TextInput key={index}
                                             placeholder='Note'
-                                            style={[styles.generalFontSize, { bottom: 10, left: 10, textDecorationLine: note.isChecked == 0 ? 'none' : 'line-through', textDecorationStyle: 'solid' }]}
-                                            onChangeText={(txt) => this.changeNote(index, txt)}>
+                                            style={[styles.generalFontSize, { left: 10, textDecorationLine: note.isChecked == 0 ? 'none' : 'line-through', textDecorationStyle: 'solid' }]}
+                                            onChangeText={(txt) => this.changeNote(index, txt)}
+                                            autoFocus= {true}>
                                             {note.note}
                                         </TextInput>
                                     </View>
@@ -367,10 +390,10 @@ const styles = StyleSheet.create({
         height: 'auto',
     },
     generalFontSize: {
-        fontSize: 20
+        fontSize: 30
     },
     titleFontSize: {
-        fontSize: 30,
+        fontSize: 40,
     },
     input: {
         width: '100%',
@@ -387,4 +410,12 @@ const styles = StyleSheet.create({
         right: 0,
         height: 60,
     },
+    header: {
+        backgroundColor: "#ffffff",
+        height: 50
+    },
+    iconButton: {
+        height: 50,
+        width: 50
+    }
 });

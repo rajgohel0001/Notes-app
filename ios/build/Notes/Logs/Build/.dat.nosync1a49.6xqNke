@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>logFormatVersion</key>
+	<integer>10</integer>
+	<key>logs</key>
+	<dict>
+		<key>3783E3DF-1798-4532-948F-AC801EB9ADF5</key>
+		<dict>
+			<key>className</key>
+			<string>IDECommandLineBuildLog</string>
+			<key>documentTypeString</key>
+			<string>&lt;nil&gt;</string>
+			<key>domainType</key>
+			<string>Xcode.IDEActivityLogDomainType.BuildLog</string>
+			<key>fileName</key>
+			<string>3783E3DF-1798-4532-948F-AC801EB9ADF5.xcactivitylog</string>
+			<key>primaryObservable</key>
+			<dict>
+				<key>highLevelStatus</key>
+				<string>E</string>
+			</dict>
+			<key>schemeIdentifier-containerName</key>
+			<string>Notes project</string>
+			<key>schemeIdentifier-schemeName</key>
+			<string>Notes</string>
+			<key>schemeIdentifier-sharedScheme</key>
+			<integer>1</integer>
+			<key>signature</key>
+			<string>Building workspace Notes with scheme Notes and configuration Debug</string>
+			<key>timeStartedRecording</key>
+			<real>585920390.56766701</real>
+			<key>timeStoppedRecording</key>
+			<real>585920391.92177904</real>
+			<key>title</key>
+			<string>Building workspace Notes with scheme Notes and configuration Debug</string>
+			<key>uniqueIdentifier</key>
+			<string>3783E3DF-1798-4532-948F-AC801EB9ADF5</string>
+		</dict>
+		<key>64893A94-D503-4932-B7ED-C218ECDD9C6A</key>
+		<dict>
+			<key>className</key>
+			<string>IDECommandLineBuildLog</string>
+			<key>documentTypeString</key>
+			<string>&lt;nil&gt;</string>
+			<key>domainType</key>
+			<string>Xcode.IDEActivityLogDomainType.BuildLog</string>
+			<key>fileName</key>
+			<string>64893A94-D503-4932-B7ED-C218ECDD9C6A.xcactivitylog</string>
+			<key>primaryObservable</key>
+			<dict>
+				<key>highLevelStatus</key>
+				<string>E</string>
+			</dict>
+			<key>schemeIdentifier-containerName</key>
+			<string>Notes project</string>
+			<key>schemeIdentifier-schemeName</key>
+			<string>Notes</string>
+			<key>schemeIdentifier-sharedScheme</key>
+			<integer>1</integer>
+			<key>signature</key>
+			<string>Building workspace Notes with scheme Notes and configuration Debug</string>
+			<key>timeStartedRecording</key>
+			<real>586095304.51848996</real>
+			<key>timeStoppedRecording</key>
+			<real>586095314.08480203</real>
+			<key>title</key>
+			<string>Building workspace Notes with scheme Notes and configuration Debug</string>
+			<key>uniqueIdentifier</key>
+			<string>64893A94-D503-4932-B7ED-C218ECDD9C6A</string>
+		</dict>
+	</dict>
+</dict>
+</plist>

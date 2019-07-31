@@ -60,13 +60,13 @@ export default class Home extends Component {
                     </View>}
                 <TouchableOpacity
                     onPress={() => { this.props.navigation.navigate('AddNote', { event: this.event, hasCheckList: 0 }) }}
-                    style={[styles.floatingMenuButtonStyle, { backgroundColor: '#fff', elevation: 25, borderRadius: 40, height: 60, width: 60 }]}>
+                    style={[styles.floatingMenuButtonStyle, { backgroundColor: '#fff', shadowOffset: { width: 10, height: 10 }, shadowColor: 'gray', shadowOpacity: 0.5, elevation: 5, borderRadius: 40, height: 60, width: 60 }]}>
                     <Icon name="add"
                         size={30}
                         style={{ color: 'black', padding: 15 }}
                     />
                 </TouchableOpacity>
-                <View style={{ flexDirection: 'row', width: 'auto', backgroundColor: 'white', elevation: 30, height: 40, bottom: 0 }}>
+                <View style={{ flexDirection: 'row', width: 'auto', backgroundColor: 'white', shadowOffset: { width: 10, height: 10 }, shadowColor: 'gray', shadowOpacity: 1, elevation: 30, height: 40, bottom: 0 }}>
                     <View style={{ flex: 4 }}></View>
                     <View style={{ flex: 3 }}>
                         <TouchableOpacity

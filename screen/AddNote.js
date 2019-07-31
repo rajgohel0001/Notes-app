@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
-import { StyleSheet, View, TextInput, ScrollView, ToastAndroid, Keyboard, BackHandler } from 'react-native';
+import { StyleSheet, View, TextInput, ScrollView, TouchableOpacity, ToastAndroid, Keyboard, BackHandler, Platform } from 'react-native';
+import { Header } from "native-base";
 import Note from '../models/Note';
+import Icon from 'react-native-vector-icons/MaterialIcons';
 import { createNote } from '../controllers/NoteController';
 import alertService from '../service/alertService';
 
@@ -60,7 +62,7 @@ export default class AddNote extends Component {
                 // console.log('result:', result);
                 // console.log('state', this.state.note);
                 // ToastAndroid.show(message, ToastAndroid.SHORT);
-                alertService.alerAndToast(message);
+                // alertService.alerAndToast(message);
                 console.log('meaasge:', message);
                 if (result) {
                     this.setState({ note: new Note() });
@@ -74,7 +76,24 @@ export default class AddNote extends Component {
     render() {
         return (
             <View style={[styles.container, { marginTop: 20 }]}>
-                <ScrollView>
+                <Header style={styles.header}>
+                    <View style={{ flex: 2 }}>
+                        <TouchableOpacity
+                            style={styles.iconButton}
+                            onPress={() => { this.createNote(); this.props.navigation.navigate('Home') }}>
+                            <Icon name="arrow-back" size={28} color="#606060" />
+                        </TouchableOpacity>
+                    </View>
+                    <View style={{ flex: 8 }}></View>
+                    <View style={{ flex: 2 }}>
+                        <TouchableOpacity
+                            style={styles.iconButton}
+                            onPress={() => { this.createNote(); this.props.navigation.navigate('Home') }}>
+                            <Icon name="check" size={28} color="#606060" />
+                        </TouchableOpacity>
+                    </View>
+                </Header>
+                <ScrollView style={{ marginTop: 10 }}>
                     <TextInput
                         style={[styles.input, styles.titleFontSize]}
                         onChangeText={(text) => this.changeTxtTitle(text)}
@@ -85,7 +104,7 @@ export default class AddNote extends Component {
                         style={[styles.input, styles.generalFontSize]}
                         onChangeText={(text) => this.changeTxt(text)}
                         placeholder={'Note'}
-                        onSubmitEditing={this.createNote}
+                        // onSubmitEditing={this.createNote}
                         multiline={true}
                     />
                 </ScrollView>
@@ -100,15 +119,23 @@ const styles = StyleSheet.create({
         padding: 20,
         height: 'auto',
     },
+    header: {
+        backgroundColor: "#ffffff",
+        height: 50,
+    },
+    iconButton: {
+        height: 50,
+        width: 50
+    },
     input: {
         width: '100%',
         borderBottomColor: '#800080',
         marginHorizontal: 5,
     },
     generalFontSize: {
-        fontSize: 20,
+        fontSize: 30,
     },
     titleFontSize: {
-        fontSize: 30,
+        fontSize: 40,
     }
 });
