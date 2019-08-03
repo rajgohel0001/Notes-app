@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { StyleSheet, ScrollView, FlatList } from 'react-native';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import NoteView from './NoteView';
 
 export default class ListNotes extends Component{
@@ -37,9 +38,12 @@ export default class ListNotes extends Component{
     render() {
         // console.log('notes-----', this.state.notes);
         return (
-            <ScrollView style={styles.container}>
-                {this.renderListNotes()}
-            </ScrollView>
+            // <ScrollView style={styles.container} keyboardDismissMode='on-drag'>
+            //     {this.renderListNotes()}
+            // </ScrollView>
+            <KeyboardAwareScrollView style={styles.container}>
+                 {this.renderListNotes()}
+            </KeyboardAwareScrollView>
         );
     }
 }

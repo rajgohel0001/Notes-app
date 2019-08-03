@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { StyleSheet, TextInput, Text, View, TouchableOpacity, ScrollView, ToastAndroid, Dimensions, Animated, BackHandler } from 'react-native';
+import { StyleSheet, TextInput, Text, View, TouchableOpacity, TouchableWithoutFeedback, KeyboardAvoidingView, ScrollView, ToastAndroid, Dimensions, Animated, BackHandler } from 'react-native';
 import { updateNote } from '../controllers/NoteController';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 const { height, width } = Dimensions.get('screen');
@@ -8,12 +8,21 @@ import RBSheet from "react-native-raw-bottom-sheet";
 import alertService from '../service/alertService';
 import CheckBox from 'react-native-check-box';
 import { Header } from "native-base";
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 
 let array = [];
 let arraySecond = [];
 let tempCheckValues = [];
 let tempCheckValuesSecond = [];
 let mainArray = [];
+let checkLineThrough = [];
+
+setScrollHeight = (width, height) => this.setState({ scrollHeight: height });
+const DismissKeyboard = ({ children }) => (
+    <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
+        {children}
+    </TouchableWithoutFeedback>
+);
 
 export default class UpdateNote extends Component {
     constructor(props) {
@@ -87,7 +96,7 @@ export default class UpdateNote extends Component {
     }
 
     changeNoteSecondArray(index, detail) {
-        console.log(index, detail);
+        console.log('Index and detail-=-=', index, detail);
         const obj = {
             note: detail,
             isChecked: 0
@@ -95,6 +104,9 @@ export default class UpdateNote extends Component {
         console.log('arraySecond object:', obj);
         // array.push(obj);
         arraySecond[index] = obj;
+        this.setState({
+
+        })
         console.log('arraySecond:', arraySecond);
     }
 
@@ -125,15 +137,21 @@ export default class UpdateNote extends Component {
      * change animated view checkbox 
      */
     checkBoxChangedSecond(id, value) {
-        this.setState({
-            checkBoxCheckedSecond: tempCheckValuesSecond
-        });
-        let tempCheckBoxChecked = this.state.checkBoxCheckedSecond;
-        tempCheckBoxChecked[id] = !value;
-        this.setState({
-            checkBoxCheckedSecond: tempCheckBoxChecked
-        });
-        this.objectWithIdSecond(id);
+        if (arraySecond[id] != null) {
+            this.setState({
+                checkBoxCheckedSecond: tempCheckValuesSecond
+            });
+            let tempCheckBoxChecked = this.state.checkBoxCheckedSecond;
+            tempCheckBoxChecked[id] = !value;
+            this.setState({
+                checkBoxCheckedSecond: tempCheckBoxChecked
+            });
+            checkLineThrough[id] = tempCheckBoxChecked[id];
+            console.log('checkLineThrough-=-=',checkLineThrough);
+            this.objectWithIdSecond(id);
+        } else {
+            alertService.alerAndToast("Enter note first");
+        }
     }
 
     /**
@@ -158,15 +176,19 @@ export default class UpdateNote extends Component {
      * change checkbox value 
      */
     checkBoxChanged(id, value) {
-        this.setState({
-            checkBoxChecked: tempCheckValues
-        });
-        let tempCheckBoxChecked = this.state.checkBoxChecked;
-        tempCheckBoxChecked[id] = !value;
-        this.setState({
-            checkBoxChecked: tempCheckBoxChecked
-        });
-        this.objectWithId(id);
+        if (array[id] != null) {
+            this.setState({
+                checkBoxChecked: tempCheckValues
+            });
+            let tempCheckBoxChecked = this.state.checkBoxChecked;
+            tempCheckBoxChecked[id] = !value;
+            this.setState({
+                checkBoxChecked: tempCheckBoxChecked
+            });
+            this.objectWithId(id);
+        } else {
+            alertService.alerAndToast("Enter note first");
+        }
     }
 
     /**
@@ -246,27 +268,31 @@ export default class UpdateNote extends Component {
         console.log('update note:', this.state.note);
         console.log('checkBoxChecked:', this.state.checkBoxChecked);
         console.log('checkBoxCheckedSecond:', this.state.checkBoxCheckedSecond);
+        console.log('checkLineThrough:', checkLineThrough);
         /**
          * render animated view
          */
         let RenderAnimatedView = this.state.ViewArray.map((item, key) => {
             { tempCheckValuesSecond[key] = false }
+            // { checkLineThrough[key] = false }
             return (
                 <Animated.View
                     key={key}>
                     <View style={{ flex: 1, flexDirection: 'row', marginBottom: 5 }}>
                         <CheckBox
-                            style={{marginTop: 7}}
+                            style={{ marginTop: 7 }}
                             isChecked={this.state.checkBoxCheckedSecond[key]}
                             onClick={() => this.checkBoxChangedSecond(key, this.state.checkBoxCheckedSecond[key])}
                         />
                         <TextInput
                             placeholder='Note'
-                            style={[styles.generalFontSize, { left: 10 }]}
+                            multiline={true}
+                            style={[styles.generalFontSize, { left: 10, textDecorationLine: checkLineThrough[key] ? 'line-through' : 'none', textDecorationStyle: 'solid',  width: '90%' }]}
                             // onBlur={(e) =>{this.checkListObject(e)}}
                             // onFocus={(txt) => this.insertToArray(txt)}
                             onChangeText={(txt) => this.changeNoteSecondArray(key, txt)}
-                            autoFocus= {true}>
+                            autoFocus={true}
+                            blurOnSubmit={true}>
                         </TextInput>
                     </View>
                 </Animated.View>
@@ -296,13 +322,15 @@ export default class UpdateNote extends Component {
                             </TouchableOpacity>
                         </View>
                     </Header>
-                    <ScrollView>
+                    <KeyboardAwareScrollView>
                         <TextInput
                             style={[styles.input, styles.titleFontSize]}
                             placeholder='Title'
                             value={this.state.note.title}
+                            multiline={true}
                             onChangeText={(text) => this.changeTxtTitle(text)}
                             onSubmitEditing={this.updateNote}
+                            blurOnSubmit={true}
                         />
                         {this.state.note.hasCheckList === 0 ? <TextInput
                             style={[styles.input, styles.generalFontSize]}
@@ -314,22 +342,26 @@ export default class UpdateNote extends Component {
                         /> :
                             this.state.note.checkList.map((note, index) => {
                                 { tempCheckValues[index] = false }
-                                return (
-                                    <View style={{ flexDirection: 'row', marginBottom: 5 }}>
-                                        <CheckBox
-                                            style={{marginTop: 7}}
-                                            isChecked={note.isChecked == 0 ? false : true}
-                                            onClick={() => this.checkBoxChanged(index, note.isChecked == 0 ? false : true)}
-                                        />
-                                        <TextInput key={index}
-                                            placeholder='Note'
-                                            style={[styles.generalFontSize, { left: 10, textDecorationLine: note.isChecked == 0 ? 'none' : 'line-through', textDecorationStyle: 'solid' }]}
-                                            onChangeText={(txt) => this.changeNote(index, txt)}
-                                            autoFocus= {true}>
-                                            {note.note}
-                                        </TextInput>
-                                    </View>
-                                )
+                                if (note) {
+                                    return (
+                                        <View style={{ flexDirection: 'row', marginBottom: 5 }}>
+                                            <CheckBox
+                                                style={{ marginTop: 7 }}
+                                                isChecked={note.isChecked == 0 ? false : true}
+                                                onClick={() => this.checkBoxChanged(index, note.isChecked == 0 ? false : true)}
+                                            />
+                                            <TextInput key={index}
+                                                placeholder='Note'
+                                                style={[styles.generalFontSize, { left: 10, textDecorationLine: note.isChecked == 0 ? 'none' : 'line-through', textDecorationStyle: 'solid', width: '90%' }]}
+                                                onChangeText={(txt) => this.changeNote(index, txt)}
+                                                multiline={true}
+                                                autoFocus={true}
+                                                blurOnSubmit={true}>
+                                                {note.note}
+                                            </TextInput>
+                                        </View>
+                                    )
+                                }
                             })
                         }
                         {RenderAnimatedView}
@@ -338,7 +370,7 @@ export default class UpdateNote extends Component {
                                 <Text style={styles.generalFontSize}> + List item </Text>
                             </TouchableOpacity>
                             : null}
-                    </ScrollView>
+                    </KeyboardAwareScrollView>
                 </View>
                 <View style={{ width: width, backgroundColor: 'white', elevation: 30, height: 40, bottom: 0 }}>
                     <TouchableOpacity
@@ -372,7 +404,7 @@ export default class UpdateNote extends Component {
                                 size={30}
                                 onPress={this.deleteNote}
                             />
-                            <Text style={{ fontSize: 20 }} onPress={this.deleteNote}>Delete</Text>
+                            <Text style={{ fontSize: 20, width: '100%' }} onPress={this.deleteNote}>Delete</Text>
                         </View>
                     </RBSheet>
                 </View>
@@ -390,10 +422,10 @@ const styles = StyleSheet.create({
         height: 'auto',
     },
     generalFontSize: {
-        fontSize: 30
+        fontSize: 20
     },
     titleFontSize: {
-        fontSize: 40,
+        fontSize: 30,
     },
     input: {
         width: '100%',

@@ -64,7 +64,7 @@ export default class CheckList extends Component {
         this.state.note.checkList = (JSON.stringify(array)).toString();
         console.log("this.state.note: ", this.state.note)
         console.log('cond: ', !this.state.note.title, this.state.note.checkList != null, this.state.note.checkList.length != 0);
-        console.log('checklist lebght:',this.state.note.checkList.length);
+        console.log('checklist lebght:', this.state.note.checkList.length);
         if (!this.state.note.title && (!this.state.note.checkList || this.state.note.checkList.length == 2)) {
             // ToastAndroid.show("Empty note discarded.", ToastAndroid.SHORT);
             alertService.alerAndToast("Empty note discarded");
@@ -116,14 +116,13 @@ export default class CheckList extends Component {
      * save note text detail
      */
     changeNote(index, detail) {
+        console.log('detail length: ', detail.length);
         const obj = {
             note: detail,
             isChecked: 0
         }
         console.log('obj:', obj);
-        if(obj.detail != ''){
-            array[index] = obj;
-        }
+        array[index] = obj;
         console.log('array:', array);
     }
 
@@ -145,16 +144,20 @@ export default class CheckList extends Component {
      * change checkbox value 
      */
     checkBoxChanged(id, value) {
-        this.setState({
-            checkBoxChecked: tempCheckValues
-        })
-        let tempCheckBoxChecked = this.state.checkBoxChecked;
-        tempCheckBoxChecked[id] = !value;
-        this.setState({
-            checkBoxChecked: tempCheckBoxChecked
-        })
-        this.objectWithId(id);
-        console.log('checkbox:', this.state.checkBoxChecked);
+        if (array[id] != null){
+            this.setState({
+                checkBoxChecked: tempCheckValues
+            })
+            let tempCheckBoxChecked = this.state.checkBoxChecked;
+            tempCheckBoxChecked[id] = !value;
+            this.setState({
+                checkBoxChecked: tempCheckBoxChecked
+            })
+            this.objectWithId(id);
+            console.log('checkbox:', this.state.checkBoxChecked);
+        } else {
+            alertService.alerAndToast("Enter note first");
+        }
     }
 
     render() {
@@ -174,16 +177,18 @@ export default class CheckList extends Component {
                     key={key}>
                     <View style={{ flex: 1, flexDirection: 'row', marginBottom: 5 }}>
                         <CheckBox
-                            style={{marginTop: 7, right: 5}}
+                            style={{ marginTop: 7, right: 5 }}
                             isChecked={this.state.checkBoxChecked[key]}
                             onClick={() => this.checkBoxChanged(key, this.state.checkBoxChecked[key])}
                         />
                         <TextInput
                             placeholder='Note'
-                            style={[styles.generalFontSize, { left: 10 }]}
+                            style={[styles.generalFontSize, { left: 10, width: '90%' }]}
                             onChangeText={(txt) => this.changeNote(key, txt)}
-                            onSubmitEditing={this.createNote}
-                            autoFocus= {true}>
+                            // onSubmitEditing={this.createNote}
+                            multiline={true}
+                            blurOnSubmit = {true}
+                            autoFocus={true}>
                         </TextInput>
                     </View>
                 </Animated.View>
@@ -194,26 +199,28 @@ export default class CheckList extends Component {
             <View style={styles.container}>
                 <Header style={styles.header}>
                     <View style={{ flex: 2 }}>
-                            <TouchableOpacity
-                                style={styles.iconButton}
-                                onPress={() => { this.createNote(); this.props.navigation.navigate('Home') }}>
-                                <Icon name="arrow-back" size={28} color="#606060" />
-                            </TouchableOpacity>
-                        </View>
-                        <View style={{ flex: 8 }}></View>
-                        <View style={{ flex: 2 }}>
-                            <TouchableOpacity
-                                style={styles.iconButton}
-                                onPress={() => { this.createNote(); this.props.navigation.navigate('Home') }}>
-                                <Icon name="check" size={28} color="#606060" />
-                            </TouchableOpacity>
-                        </View>
+                        <TouchableOpacity
+                            style={styles.iconButton}
+                            onPress={() => { this.createNote(); this.props.navigation.navigate('Home') }}>
+                            <Icon name="arrow-back" size={28} color="#606060" />
+                        </TouchableOpacity>
+                    </View>
+                    <View style={{ flex: 8 }}></View>
+                    <View style={{ flex: 2 }}>
+                        <TouchableOpacity
+                            style={styles.iconButton}
+                            onPress={() => { this.createNote(); this.props.navigation.navigate('Home') }}>
+                            <Icon name="check" size={28} color="#606060" />
+                        </TouchableOpacity>
+                    </View>
                 </Header>
-                <ScrollView style={{marginTop: 10}}>
+                <ScrollView style={{ marginTop: 10 }}>
                     <TextInput
                         style={[styles.input, styles.titleFontSize]}
                         placeholder='Title'
+                        multiline={true}
                         onChangeText={(text) => this.changeTitle(text)}
+                        blurOnSubmit={true}
                     />
                     <View style={{ flex: 1, padding: 2 }}>
                         {RenderAnimatedView}
@@ -244,9 +251,9 @@ const styles = StyleSheet.create({
         width: 50
     },
     generalFontSize: {
-        fontSize: 30,
+        fontSize: 20,
     },
     titleFontSize: {
-        fontSize: 40,
+        fontSize: 30,
     }
 });

@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { StyleSheet, Text, View, ToastAndroid, FlatList, TouchableHighlight } from 'react-native';
+import { StyleSheet, Text, View, Platform, FlatList, TouchableHighlight, Dimensions } from 'react-native';
 import { withNavigation } from 'react-navigation';
 import Ripple from 'react-native-material-ripple';
 import Icon from 'react-native-vector-icons/MaterialIcons';
@@ -7,6 +7,8 @@ import { deleteNote } from '../controllers/NoteController';
 import alertService from '../service/alertService';
 import CheckBox from 'react-native-check-box';
 import RBSheet from "react-native-raw-bottom-sheet";
+const width = Dimensions.get('window').width;
+
 
 class NoteView extends Component {
     constructor(props) {
@@ -19,8 +21,6 @@ class NoteView extends Component {
         };
         // console.log('this.props.note==============>', this.props.note);
         if (this.props.note.item.checkList) {
-            // let checklist = JSON.parse(this.props.note.item.checkList);
-            // console.log("checklist after parse================>", checklist);
             // const type = typeof JSON.parse(this.props.note.item.checkList);
             // console.log('type:', type);
             // this.props.note.item.checkList = checklist;
@@ -28,10 +28,6 @@ class NoteView extends Component {
             this.setState({ note: this.props.note })
         }
     }
-
-    // componentWillReceiveProps(nextProps) {
-    //     this.setState({ note: nextProps.note });
-    // }
 
     static getDerivedStateFromProps(nextProps, prevState) {
         return {
@@ -44,6 +40,7 @@ class NoteView extends Component {
      * delete note
      */
     deleteNote = () => {
+        this.RBSheet.close();
         this.setState({ isVisible: true })
         if (!this.state.note.item) return;
 
@@ -58,47 +55,39 @@ class NoteView extends Component {
         });
     }
 
+    /**
+     * render checklist view
+     */
     renderNote = () => {
         console.log('checklistttt============>', typeof this.state.note.item.checkList);
-        // if (typeof this.state.note.item.checkList === 'string') {
-        //     let checklist = JSON.parse(this.state.note.item.checkList);
-        //     console.log("parse checklist=============>", checklist)
-        // }
-        // if (this.state.note.item && this.state.note.item.checkList && this.state.note.item.checkList.length) {
-        //     this.state.note.item.checkList = JSON.parse(JSON.stringify(this.state.note.item.checkList));
-        // }
-        // console.log('lenght of checklisrt:', JSON.parse(JSON.stringify(this.state.note.item.checkList)));
-        // console.log('checked its: ', this.state.note.item.checkList.length != 0);
         if (this.state.note.item.checkList && this.state.note.item.checkList.length != 0) {
             return (
                 this.state.note.item.checkList.map((note, index) => {
-                    return (
-                        <View key={index} style={{ flexDirection: 'row' }}>
-                            <CheckBox
-                                isChecked={note.isChecked == 0 ? false : true}
-                            />
-                            <Text style={[styles.generaldetail,
-                            {
-                                marginTop: 5, textDecorationLine: note.isChecked == 0 ? 'none' : 'line-through',
-                                textDecorationStyle: 'solid'
-                            }]}>
-                                {note.note}
-                            </Text>
-                        </View>
-                    )
+                    if (note) {
+                        return (
+                            <View key={index} style={{ flexDirection: 'row' }}
+                            onLayout={(event) => {
+                                const { x, y, width, height } = event.nativeEvent.layout;
+                                console.log('view detail=======', x, y, width, height);
+                            }}>
+                                <View>
+                                    <CheckBox
+                                        isChecked={note.isChecked == 0 ? false : true}
+                                    />
+                                </View>
+                                {/* <View style={{ flex: 2 }}></View> */}
+                                <View style={{ marginLeft: 5, marginRight: Platform.OS === 'ios' ? 20 : null }}>
+                                    <Text style={[styles.generaldetail, {
+                                        marginTop: 5, textDecorationLine: note.isChecked == 0 ? 'none' : 'line-through',
+                                        textDecorationStyle: 'solid'
+                                    }]}>
+                                        {note.note}
+                                    </Text>
+                                </View>
+                            </View>
+                        )
+                    }
                 })
-                // <FlatList
-                //     data={this.state.note.item.checkList}
-                //     renderItem={(listData) => {
-                //         return (
-                //             console.log('render item=====', listData),
-                //             <View style={{ flexDirection: 'row' }}>
-                //             <CheckBox></CheckBox>
-                //             <Text style={{ marginTop: 5 }}>{listData.item.note}</Text>
-                //             </View>
-                //         )
-                //     }}
-                // ></FlatList>
             )
         }
     }
@@ -131,27 +120,15 @@ class NoteView extends Component {
                             this.setState({ height: height })
                         }}>
                         <View style={{ flexDirection: 'column' }}>
-                            {this.state.note.item.title ? <Text style={styles.generalFontSize}>{this.state.note.item.title}</Text> : null}
+                            {this.state.note.item.title ? <Text style={[styles.generalFontSize, { marginBottom: Platform.OS === 'ios' ? 10 : null }]}>{this.state.note.item.title}</Text> : null}
                             {this.state.note.item.hasCheckList == 0 ?
-                                <Text style={styles.generaldetail}>{this.state.note.item.detail}</Text> : null
-                                // <FlatList
-                                //     data={this.state.note.item.checkList}
-                                //     renderItem={(item) => {
-                                //         console.log('render item=====',item),
-                                //         <Text>{item.note}</Text>
-                                //     }}
-                                // ></FlatList>
-                                // this.state.note.item.checkList.map((note) => {
-                                //     return (
-                                //         <Text>{note.note}</Text>
-                                //     )
-                                // })
+                                <View style={{maxHeight: 130}}><Text style={styles.generaldetail}>{this.state.note.item.detail}</Text></View> : null
                             }
-                            {this.renderNote()}
-                            {/* {this.state.note.item.checkList.length ? <Text>found</Text> : <Text>not found</Text>} */}
-                            {/* <Text style={styles.generaldetail}>{this.state.note.item.checkList}</Text> */}
+                            <View style={{maxHeight: 130}}>{this.renderNote()}</View>
                         </View>
-                        {this.state.height === 200 ? <Text style={{ top: 150, left: 5, fontSize: 18 }}>...</Text> : null}
+                        <View style={{ height: 20}}>
+                            {this.state.height >= 200 ? <Text style={{ fontSize: 18, left: 3, fontWeight:'bold' }}>...</Text> : null}
+                        </View>
                     </View>
                 </Ripple>
                 <View>
@@ -176,7 +153,7 @@ class NoteView extends Component {
                                 size={30}
                                 onPress={this.deleteNote}
                             />
-                            <Text style={{ fontSize: 20 }} onPress={this.deleteNote}>Delete</Text>
+                            <Text style={{ fontSize: 20, width: '100%' }} onPress={this.deleteNote}>Delete</Text>
                         </View>
                     </RBSheet>
                 </View>
@@ -189,17 +166,17 @@ export default withNavigation(NoteView);
 
 const styles = StyleSheet.create({
     container: {
-        flex: 1,
-        flexDirection: 'row',
+        // flexDirection: 'row',
         marginVertical: 5,
         borderWidth: 1,
         borderColor: '#e1e0e0',
         borderRadius: 10,
-        padding: 10,
+        padding: 20,
         margin: 15,
         height: 'auto',
         maxHeight: 200,
-        overflow: 'hidden',
+        overflow: 'hidden'
+        
     },
     generalFontSize: {
         fontSize: 18,
@@ -209,6 +186,8 @@ const styles = StyleSheet.create({
     },
     generaldetail: {
         color: 'gray',
-        fontSize: 15
+        fontSize: 15,
+        textAlign: 'justify',
+        marginRight: 10
     }
 });

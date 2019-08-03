@@ -98,14 +98,19 @@ export default class AddNote extends Component {
                         style={[styles.input, styles.titleFontSize]}
                         onChangeText={(text) => this.changeTxtTitle(text)}
                         placeholder={'Title'}
+                        multiline={true}
                         onSubmitEditing={this.createNote}
+                        blurOnSubmit={true}
                     />
                     <TextInput
                         style={[styles.input, styles.generalFontSize]}
                         onChangeText={(text) => this.changeTxt(text)}
                         placeholder={'Note'}
-                        // onSubmitEditing={this.createNote}
                         multiline={true}
+                        // onSubmitEditing={this.createNote}
+                        autoFocus={true}
+                        multiline={true}
+                        blurOnSubmit={true}
                     />
                 </ScrollView>
             </View>
@@ -133,9 +138,9 @@ const styles = StyleSheet.create({
         marginHorizontal: 5,
     },
     generalFontSize: {
-        fontSize: 30,
+        fontSize: 20,
     },
     titleFontSize: {
-        fontSize: 40,
+        fontSize: 30,
     }
 });
