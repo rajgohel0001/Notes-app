@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { StyleSheet, TextInput, Text, View, TouchableOpacity, TouchableWithoutFeedback, KeyboardAvoidingView, ScrollView, ToastAndroid, Dimensions, Animated, BackHandler } from 'react-native';
 import { updateNote } from '../controllers/NoteController';
 import Icon from 'react-native-vector-icons/MaterialIcons';
-const { height, width } = Dimensions.get('screen');
+// const { height, width } = Dimensions.get('screen');
 import { deleteNote } from '../controllers/NoteController';
 import RBSheet from "react-native-raw-bottom-sheet";
 import alertService from '../service/alertService';
@@ -281,6 +281,7 @@ export default class UpdateNote extends Component {
                     <View style={{ flex: 1, flexDirection: 'row', marginBottom: 5 }}>
                         <CheckBox
                             style={{ marginTop: 7 }}
+                            // style={styles.checkboxView} android 
                             isChecked={this.state.checkBoxCheckedSecond[key]}
                             onClick={() => this.checkBoxChangedSecond(key, this.state.checkBoxCheckedSecond[key])}
                         />
@@ -323,6 +324,7 @@ export default class UpdateNote extends Component {
                         </View>
                     </Header>
                     <KeyboardAwareScrollView>
+                    {/* <ScrollView> */}
                         <TextInput
                             style={[styles.input, styles.titleFontSize]}
                             placeholder='Title'
@@ -362,6 +364,22 @@ export default class UpdateNote extends Component {
                                         </View>
                                     )
                                 }
+                                // return (
+                                //     <View style={{ flex: 1, flexDirection: 'row', marginBottom: Platform.OS === 'ios' ? 5 : null }}>
+                                //         <CheckBox
+                                //             style={styles.checkboxView}
+                                //             isChecked={note.isChecked == 0 ? false : true}
+                                //             onClick={() => this.checkBoxChanged(index, note.isChecked == 0 ? false : true)}
+                                //         />
+                                //         <TextInput key={index}
+                                //             placeholder='Note'
+                                //             style={[styles.generalFontSize, { left: 10, textDecorationLine: note.isChecked == 0 ? 'none' : 'line-through', textDecorationStyle: 'solid', width: '100%' }]}
+                                //             onChangeText={(txt) => this.changeNote(index, txt)}
+                                //             autoFocus={true}>
+                                //             {note.note}
+                                //         </TextInput>
+                                //     </View>
+                                // )
                             })
                         }
                         {RenderAnimatedView}
@@ -372,7 +390,7 @@ export default class UpdateNote extends Component {
                             : null}
                     </KeyboardAwareScrollView>
                 </View>
-                <View style={{ width: width, backgroundColor: 'white', elevation: 30, height: 40, bottom: 0 }}>
+                <View style={{ width: '100%', backgroundColor: 'white', elevation: 30, height: 40, bottom: 0 }}>
                     <TouchableOpacity
                         onPress={() => { this.props.navigation.navigate('AddNote', { event: this.event }) }}
                         style={styles.floatingMenuButtonStyle}>
@@ -448,6 +466,11 @@ const styles = StyleSheet.create({
     },
     iconButton: {
         height: 50,
-        width: 50
+        width: 50,
+        top: Platform.OS === 'ios' ? null : 20
+    },
+    checkboxView: {
+        marginTop: Platform.OS === 'ios' ? 7 : 20,
+        right: Platform.OS === 'ios' ? 5 : null
     }
 });

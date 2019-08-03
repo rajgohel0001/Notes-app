@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { StyleSheet, View, TextInput, ScrollView, TouchableOpacity, ToastAndroid, Keyboard, BackHandler, Platform } from 'react-native';
+import { StyleSheet, View, TextInput, ScrollView, TouchableOpacity, Keyboard, BackHandler, Platform } from 'react-native';
 import { Header } from "native-base";
 import Note from '../models/Note';
 import Icon from 'react-native-vector-icons/MaterialIcons';
@@ -75,7 +75,7 @@ export default class AddNote extends Component {
 
     render() {
         return (
-            <View style={[styles.container, { marginTop: 20 }]}>
+            <View style={styles.container}>
                 <Header style={styles.header}>
                     <View style={{ flex: 2 }}>
                         <TouchableOpacity
@@ -130,7 +130,8 @@ const styles = StyleSheet.create({
     },
     iconButton: {
         height: 50,
-        width: 50
+        width: 50,
+        top: Platform.OS === 'ios' ? null : 20
     },
     input: {
         width: '100%',

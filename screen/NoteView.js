@@ -87,6 +87,20 @@ class NoteView extends Component {
                             </View>
                         )
                     }
+                    // return (
+                    //     <View key={index} style={{ flexDirection: 'row' }}>
+                    //         <CheckBox
+                    //             isChecked={note.isChecked == 0 ? false : true}
+                    //         />
+                    //         <Text style={[styles.generaldetail,
+                    //         {
+                    //             marginTop: Platform.OS === 'ios' ? 5 : null, textDecorationLine: note.isChecked == 0 ? 'none' : 'line-through',
+                    //             textDecorationStyle: 'solid'
+                    //         }]}>
+                    //             {note.note}
+                    //         </Text>
+                    //     </View>
+                    // )
                 })
             )
         }

@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, ScrollView, TextInput, StyleSheet, Text, ToastAndroid, TouchableOpacity, BackHandler, Animated } from 'react-native';
+import { View, ScrollView, TextInput, StyleSheet, Text, Platform, TouchableOpacity, BackHandler, Animated } from 'react-native';
 import { Header } from "native-base";
 import Note from '../models/Note';
 import Icon from 'react-native-vector-icons/MaterialIcons';
@@ -123,6 +123,9 @@ export default class CheckList extends Component {
         }
         console.log('obj:', obj);
         array[index] = obj;
+        // if (obj.detail != '') {
+        //     array[index] = obj;
+        // }
         console.log('array:', array);
     }
 
@@ -178,6 +181,7 @@ export default class CheckList extends Component {
                     <View style={{ flex: 1, flexDirection: 'row', marginBottom: 5 }}>
                         <CheckBox
                             style={{ marginTop: 7, right: 5 }}
+                            // style={styles.checkboxView}
                             isChecked={this.state.checkBoxChecked[key]}
                             onClick={() => this.checkBoxChanged(key, this.state.checkBoxChecked[key])}
                         />
@@ -214,21 +218,21 @@ export default class CheckList extends Component {
                         </TouchableOpacity>
                     </View>
                 </Header>
-                <ScrollView style={{ marginTop: 10 }}>
-                    <TextInput
-                        style={[styles.input, styles.titleFontSize]}
-                        placeholder='Title'
-                        multiline={true}
-                        onChangeText={(text) => this.changeTitle(text)}
-                        blurOnSubmit={true}
-                    />
-                    <View style={{ flex: 1, padding: 2 }}>
-                        {RenderAnimatedView}
-                    </View>
-                    <TouchableOpacity onPress={this.AddNewView}>
-                        <Text style={styles.generalFontSize}> + List item </Text>
-                    </TouchableOpacity>
-                </ScrollView>
+                <View style={styles.container}>
+                    <ScrollView style={{ marginTop: 10 }}>
+                        <TextInput
+                            style={[styles.input, styles.titleFontSize]}
+                            placeholder='Title'
+                            onChangeText={(text) => this.changeTitle(text)}
+                        />
+                        <View style={{ flex: 1, padding: 2 }}>
+                            {RenderAnimatedView}
+                        </View>
+                        <TouchableOpacity onPress={this.AddNewView}>
+                            <Text style={styles.generalFontSize}> + List item </Text>
+                        </TouchableOpacity>
+                    </ScrollView>
+                </View>
             </View>
         )
     }
@@ -248,12 +252,17 @@ const styles = StyleSheet.create({
     },
     iconButton: {
         height: 50,
-        width: 50
+        width: 50,
+        top: Platform.OS === 'ios' ? null : 20
     },
     generalFontSize: {
         fontSize: 20,
     },
     titleFontSize: {
-        fontSize: 30,
+        fontSize: 30
+    },
+    checkboxView: {
+        marginTop: Platform.OS === 'ios' ? 7 : 20,
+        right: Platform.OS === 'ios' ? 5 : null
     }
 });
