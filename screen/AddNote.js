@@ -75,7 +75,7 @@ export default class AddNote extends Component {
 
     render() {
         return (
-            <View style={styles.container}>
+            <>
                 <Header style={styles.header}>
                     <View style={{ flex: 2 }}>
                         <TouchableOpacity
@@ -93,27 +93,29 @@ export default class AddNote extends Component {
                         </TouchableOpacity>
                     </View>
                 </Header>
-                <ScrollView style={{ marginTop: 10 }}>
-                    <TextInput
-                        style={[styles.input, styles.titleFontSize]}
-                        onChangeText={(text) => this.changeTxtTitle(text)}
-                        placeholder={'Title'}
-                        multiline={true}
-                        onSubmitEditing={this.createNote}
-                        blurOnSubmit={true}
-                    />
-                    <TextInput
-                        style={[styles.input, styles.generalFontSize]}
-                        onChangeText={(text) => this.changeTxt(text)}
-                        placeholder={'Note'}
-                        multiline={true}
-                        // onSubmitEditing={this.createNote}
-                        autoFocus={true}
-                        multiline={true}
-                        blurOnSubmit={true}
-                    />
-                </ScrollView>
-            </View>
+                <View style={styles.container}>
+                    <ScrollView style={{ marginTop: Platform.OS == 'ios' ? 10 : null }}>
+                        <TextInput
+                            style={[styles.input, styles.titleFontSize]}
+                            onChangeText={(text) => this.changeTxtTitle(text)}
+                            placeholder={'Title'}
+                            multiline={true}
+                            onSubmitEditing={this.createNote}
+                            blurOnSubmit={true}
+                        />
+                        <TextInput
+                            style={[styles.input, styles.generalFontSize]}
+                            onChangeText={(text) => this.changeTxt(text)}
+                            placeholder={'Note'}
+                            multiline={true}
+                            // onSubmitEditing={this.createNote}
+                            autoFocus={true}
+                            multiline={true}
+                            blurOnSubmit={true}
+                        />
+                    </ScrollView>
+                </View>
+            </>
         )
     }
 }
@@ -127,6 +129,8 @@ const styles = StyleSheet.create({
     header: {
         backgroundColor: "#ffffff",
         height: 50,
+        borderBottomColor: Platform.OS == 'ios' ? null : '#000',
+        borderBottomWidth: Platform.OS == 'ios' ? null : 1
     },
     iconButton: {
         height: 50,

@@ -63,13 +63,13 @@ class NoteView extends Component {
         if (this.state.note.item.checkList && this.state.note.item.checkList.length != 0) {
             return (
                 this.state.note.item.checkList.map((note, index) => {
-                    if (note) {
+                    if (note && index < 6) {
                         return (
                             <View key={index} style={{ flexDirection: 'row' }}
-                            onLayout={(event) => {
-                                const { x, y, width, height } = event.nativeEvent.layout;
-                                console.log('view detail=======', x, y, width, height);
-                            }}>
+                                onLayout={(event) => {
+                                    const { x, y, width, height } = event.nativeEvent.layout;
+                                    console.log('view detail=======', x, y, width, height);
+                                }}>
                                 <View>
                                     <CheckBox
                                         isChecked={note.isChecked == 0 ? false : true}
@@ -77,9 +77,9 @@ class NoteView extends Component {
                                 </View>
                                 {/* <View style={{ flex: 2 }}></View> */}
                                 <View style={{ marginLeft: 5, marginRight: Platform.OS === 'ios' ? 20 : null }}>
-                                    <Text style={[styles.generaldetail, {
-                                        marginTop: 5, textDecorationLine: note.isChecked == 0 ? 'none' : 'line-through',
-                                        textDecorationStyle: 'solid'
+                                    <Text numberOfLines={1} style={[styles.generaldetail, {
+                                        marginTop: Platform.OS == 'ios' ? 5 : null, textDecorationLine: note.isChecked == 0 ? 'none' : 'line-through',
+                                        textDecorationStyle: 'solid', marginRight: 20
                                     }]}>
                                         {note.note}
                                     </Text>
@@ -87,20 +87,6 @@ class NoteView extends Component {
                             </View>
                         )
                     }
-                    // return (
-                    //     <View key={index} style={{ flexDirection: 'row' }}>
-                    //         <CheckBox
-                    //             isChecked={note.isChecked == 0 ? false : true}
-                    //         />
-                    //         <Text style={[styles.generaldetail,
-                    //         {
-                    //             marginTop: Platform.OS === 'ios' ? 5 : null, textDecorationLine: note.isChecked == 0 ? 'none' : 'line-through',
-                    //             textDecorationStyle: 'solid'
-                    //         }]}>
-                    //             {note.note}
-                    //         </Text>
-                    //     </View>
-                    // )
                 })
             )
         }
@@ -130,19 +116,18 @@ class NoteView extends Component {
                     <View style={styles.container}
                         onLayout={(event) => {
                             const { x, y, width, height } = event.nativeEvent.layout;
-                            // console.log('view detail=======', x, y, width, height);
+                            console.log('view detail=======', x, y, width, height);
                             this.setState({ height: height })
                         }}>
                         <View style={{ flexDirection: 'column' }}>
                             {this.state.note.item.title ? <Text style={[styles.generalFontSize, { marginBottom: Platform.OS === 'ios' ? 10 : null }]}>{this.state.note.item.title}</Text> : null}
                             {this.state.note.item.hasCheckList == 0 ?
-                                <View style={{maxHeight: 130}}><Text style={styles.generaldetail}>{this.state.note.item.detail}</Text></View> : null
+                                <View style={{ flexDirection: 'row' }}><Text numberOfLines={6} style={[styles.generaldetail, { justifyContent: 'center', flex: 1 }]}>{this.state.note.item.detail}</Text></View> : null
                             }
-                            <View style={{maxHeight: 130}}>{this.renderNote()}</View>
+                            <View>{this.renderNote()}</View>
                         </View>
-                        <View style={{ height: 20}}>
-                            {this.state.height >= 200 ? <Text style={{ fontSize: 18, left: 3, fontWeight:'bold' }}>...</Text> : null}
-                        </View>
+                        {this.state.height >= 200 ?
+                            <View style={{ height: 20 }}><Text style={{ fontSize: 10, fontWeight: 'bold', color: '#000', marginLeft: 7 }}>...</Text></View> : null}
                     </View>
                 </Ripple>
                 <View>
@@ -181,16 +166,17 @@ export default withNavigation(NoteView);
 const styles = StyleSheet.create({
     container: {
         // flexDirection: 'row',
+        flex: 1,
         marginVertical: 5,
         borderWidth: 1,
         borderColor: '#e1e0e0',
         borderRadius: 10,
-        padding: 20,
+        padding: Platform.OS == 'ios' ? 20 : 15,
         margin: 15,
         height: 'auto',
         maxHeight: 200,
         overflow: 'hidden'
-        
+
     },
     generalFontSize: {
         fontSize: 18,

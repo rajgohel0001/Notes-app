@@ -147,7 +147,7 @@ export default class CheckList extends Component {
      * change checkbox value 
      */
     checkBoxChanged(id, value) {
-        if (array[id] != null){
+        if (array[id] != null) {
             this.setState({
                 checkBoxChecked: tempCheckValues
             })
@@ -178,20 +178,20 @@ export default class CheckList extends Component {
             return (
                 <Animated.View
                     key={key}>
-                    <View style={{ flex: 1, flexDirection: 'row', marginBottom: 5 }}>
+                    <View style={{ flex: 1, flexDirection: 'row', marginBottom: Platform.OS == 'ios' ? 5 : null }}>
                         <CheckBox
-                            style={{ marginTop: 7, right: 5 }}
+                            style={{ marginTop: Platform.OS == 'ios' ? 7 : 13, right: 5 }}
                             // style={styles.checkboxView}
                             isChecked={this.state.checkBoxChecked[key]}
                             onClick={() => this.checkBoxChanged(key, this.state.checkBoxChecked[key])}
                         />
                         <TextInput
                             placeholder='Note'
-                            style={[styles.generalFontSize, { left: 10, width: '90%' }]}
+                            style={[styles.generalFontSize, { left: Platform.OS == 'ios' ? 10 : null, width: '90%' }]}
                             onChangeText={(txt) => this.changeNote(key, txt)}
                             // onSubmitEditing={this.createNote}
                             multiline={true}
-                            blurOnSubmit = {true}
+                            blurOnSubmit={true}
                             autoFocus={true}>
                         </TextInput>
                     </View>
@@ -200,7 +200,7 @@ export default class CheckList extends Component {
         });
 
         return (
-            <View style={styles.container}>
+            <>
                 <Header style={styles.header}>
                     <View style={{ flex: 2 }}>
                         <TouchableOpacity
@@ -219,7 +219,7 @@ export default class CheckList extends Component {
                     </View>
                 </Header>
                 <View style={styles.container}>
-                    <ScrollView style={{ marginTop: 10 }}>
+                    <ScrollView style={{ marginTop: Platform.OS == 'ios' ? 10 : null }}>
                         <TextInput
                             style={[styles.input, styles.titleFontSize]}
                             placeholder='Title'
@@ -233,7 +233,7 @@ export default class CheckList extends Component {
                         </TouchableOpacity>
                     </ScrollView>
                 </View>
-            </View>
+            </>
         )
     }
 }
@@ -248,7 +248,9 @@ const styles = StyleSheet.create({
     },
     header: {
         backgroundColor: "#ffffff",
-        height: 50
+        height: 50,
+        borderBottomColor: Platform.OS == 'ios' ? null : '#000',
+        borderBottomWidth: Platform.OS == 'ios' ? null : 1
     },
     iconButton: {
         height: 50,
