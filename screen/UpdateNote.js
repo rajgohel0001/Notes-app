@@ -220,7 +220,7 @@ export default class UpdateNote extends Component {
 
         note.detail = text;
         this.setState({ note })
-        this.updateNote();
+        // this.updateNote();
     }
 
     /**
