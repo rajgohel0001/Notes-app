@@ -63,7 +63,7 @@ class NoteView extends Component {
         if (this.state.note.item.checkList && this.state.note.item.checkList.length != 0) {
             return (
                 this.state.note.item.checkList.map((note, index) => {
-                    if (note && index < 6) {
+                    if (note && Platform.OS == 'ios' ? index < 5 : index < 6) {
                         return (
                             <View key={index} style={{ flexDirection: 'row' }}
                                 onLayout={(event) => {
@@ -126,8 +126,8 @@ class NoteView extends Component {
                             }
                             <View>{this.renderNote()}</View>
                         </View>
-                        {this.state.height >= 200 ?
-                            <View style={{ height: 20 }}><Text style={{ fontSize: 10, fontWeight: 'bold', color: '#000', marginLeft: 7 }}>...</Text></View> : null}
+                        {this.state.height >= (Platform.OS == 'ios' ? 160 : 200) ?
+                            <View style={{ height: 20 }}><Text style={{ fontSize: Platform.OS == 'ios' ? 15 : 10, fontWeight: 'bold', color: '#000', marginLeft: Platform.OS == 'ios' ? 5 : 7 }}>...</Text></View> : null}
                     </View>
                 </Ripple>
                 <View>

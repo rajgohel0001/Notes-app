@@ -243,14 +243,18 @@ const styles = StyleSheet.create({
         flex: 1,
         flexDirection: 'column',
         backgroundColor: 'white',
-        padding: 20,
+        padding: Platform.OS == 'ios' ? null : 20,
+        paddingBottom: Platform.OS == 'ios' ? 20 : null,
+        paddingRight: Platform.OS == 'ios' ? 20 : null,
+        paddingLeft: Platform.OS == 'ios' ? 20 : null,
         height: 'auto',
     },
     header: {
         backgroundColor: "#ffffff",
         height: 50,
         borderBottomColor: Platform.OS == 'ios' ? null : '#000',
-        borderBottomWidth: Platform.OS == 'ios' ? null : 1
+        borderBottomWidth: Platform.OS == 'ios' ? null : 1,
+        marginTop: Platform.OS == 'ios' ? 20 : null
     },
     iconButton: {
         height: 50,
