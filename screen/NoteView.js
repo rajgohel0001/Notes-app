@@ -120,7 +120,7 @@ class NoteView extends Component {
                             this.setState({ height: height })
                         }}>
                         <View style={{ flexDirection: 'column' }}>
-                            {this.state.note.item.title ? <Text style={[styles.generalFontSize, { marginBottom: Platform.OS === 'ios' ? 10 : null }]}>{this.state.note.item.title}</Text> : null}
+                            {this.state.note.item.title ? <Text numberOfLines={1} style={[styles.generalFontSize, { marginBottom: Platform.OS === 'ios' ? 10 : null }]}>{this.state.note.item.title}</Text> : null}
                             {this.state.note.item.hasCheckList == 0 ?
                                 <View style={{ flexDirection: 'row' }}><Text numberOfLines={6} style={[styles.generaldetail, { justifyContent: 'center', flex: 1 }]}>{this.state.note.item.detail}</Text></View> : null
                             }
