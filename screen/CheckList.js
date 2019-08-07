@@ -117,15 +117,16 @@ export default class CheckList extends Component {
      */
     changeNote(index, detail) {
         console.log('detail length: ', detail.length);
-        const obj = {
-            note: detail,
-            isChecked: 0
+        if(detail){
+            const obj = {
+                note: detail,
+                isChecked: 0
+            }
+            console.log('obj:', obj);
+            array[index] = obj;
+        } else {
+            array.splice(index,1);
         }
-        console.log('obj:', obj);
-        array[index] = obj;
-        // if (obj.detail != '') {
-        //     array[index] = obj;
-        // }
         console.log('array:', array);
     }
 

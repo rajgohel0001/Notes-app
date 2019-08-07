@@ -79,12 +79,16 @@ export default class UpdateNote extends Component {
      */
     changeNote(index, detail) {
         console.log(index, detail);
-        const obj = {
-            note: detail,
-            isChecked: 0
+        if (detail) {
+            const obj = {
+                note: detail,
+                isChecked: 0
+            }
+            console.log('array object', obj);
+            array[index] = obj;
+        } else {
+            array.splice(index,1);
         }
-        console.log('array object', obj);
-        array[index] = obj;
         console.log('array:', array);
     }
 
@@ -241,30 +245,54 @@ export default class UpdateNote extends Component {
      */
     updateNote = () => {
         console.log('note in updateNote:', this.state.note);
-        mainArray = array.concat(arraySecond);
-        console.log('mainArray:', mainArray);
-        if (!this.state.note.title && (!this.state.note.detail || (this.state.note.hasCheckList == 1 && !mainArray))) {
-            // alertService.alerAndToast("Empty note discarded");
-            this.deleteNote();
-        } else {
-            let object = { ...this.state.note };
-            console.log('object:', object);
-            if (!object.detail.length) {
-                object.checkList = (JSON.stringify(mainArray)).toString();
-            }
-            console.log('after parsing the object:', object);
-            updateNote(object).then(({ result, message }) => {
-                // ToastAndroid.show(message, ToastAndroid.SHORT);
-                if (result) {
-                    if (this.state.event) {
-                        this.state.event.emit('onUpdateNote');
+        if (this.state.note.hasCheckList == 0) {
+            if (!this.state.note.title && !this.state.note.detail) {
+                // alertService.alerAndToast("Empty note discarded");
+                this.deleteNote();
+            } else {
+                let object = { ...this.state.note };
+                console.log('object:', object);
+                console.log('after parsing the object:', object);
+                updateNote(object).then(({ result, message }) => {
+                    // ToastAndroid.show(message, ToastAndroid.SHORT);
+                    if (result) {
+                        if (this.state.event) {
+                            this.state.event.emit('onUpdateNote');
+                        }
                     }
+                    array = [];
+                    arraySecond = [];
+                    mainArray = [];
+                    // this.props.navigation.navigate('Home');
+                });
+            }
+        } else if (this.state.note.hasCheckList == 1) {
+            // console.log('inside====', this.state.note.title, mainArray, array, arraySecond);
+            if (!this.state.note.title && !mainArray.length && !array.length) {
+                // alertService.alerAndToast("Empty note discarded");
+                this.deleteNote();
+            } else {
+                mainArray = array.concat(arraySecond);
+                console.log('mainArray:', mainArray, this.state.note.hasCheckList);
+                let object = { ...this.state.note };
+                console.log('object:', object);
+                if (!object.detail.length) {
+                    object.checkList = (JSON.stringify(mainArray)).toString();
                 }
-                array = [];
-                arraySecond = [];
-                mainArray = [];
-                // this.props.navigation.navigate('Home');
-            });
+                console.log('after parsing the object:', object);
+                updateNote(object).then(({ result, message }) => {
+                    // ToastAndroid.show(message, ToastAndroid.SHORT);
+                    if (result) {
+                        if (this.state.event) {
+                            this.state.event.emit('onUpdateNote');
+                        }
+                    }
+                    array = [];
+                    arraySecond = [];
+                    mainArray = [];
+                    // this.props.navigation.navigate('Home');
+                });
+            }
         }
     }
 
@@ -330,59 +358,59 @@ export default class UpdateNote extends Component {
                     innerRef={ref => {
                         this.scroll = ref
                     }}>
-                {/* <KeyboardAvoidingView behavior='padding' style={{ flex: 1 }}> */}
-                        <View style={styles.container}>
+                    {/* <KeyboardAvoidingView behavior='padding' style={{ flex: 1 }}> */}
+                    <View style={styles.container}>
+                        <TextInput
+                            style={[styles.input, styles.titleFontSize]}
+                            placeholder='Title'
+                            value={this.state.note.title}
+                            multiline={true}
+                            onChangeText={(text) => this.changeTxtTitle(text)}
+                            // onSubmitEditing={this.updateNote}
+                            blurOnSubmit={true}
+                        />
+                        {this.state.note.hasCheckList === 0 ?
                             <TextInput
-                                style={[styles.input, styles.titleFontSize]}
-                                placeholder='Title'
-                                value={this.state.note.title}
-                                multiline={true}
-                                onChangeText={(text) => this.changeTxtTitle(text)}
+                                style={[styles.input, styles.generalFontSize, { justifyContent: 'center' }]}
+                                placeholder='Note'
+                                autoFocus={true}
+                                value={this.state.note.detail}
+                                onChangeText={(text) => this.changeTxt(text)}
                                 // onSubmitEditing={this.updateNote}
-                                blurOnSubmit={true}
-                            />
-                            {this.state.note.hasCheckList === 0 ?
-                                <TextInput
-                                    style={[styles.input, styles.generalFontSize, { justifyContent: 'center' }]}
-                                    placeholder='Note'
-                                    autoFocus={true}
-                                    value={this.state.note.detail}
-                                    onChangeText={(text) => this.changeTxt(text)}
-                                    // onSubmitEditing={this.updateNote}
-                                    multiline={true}
-                                /> :
-                                this.state.note.checkList.map((note, index) => {
-                                    { tempCheckValues[index] = false }
-                                    if (note) {
-                                        return (
-                                            <View style={{ flexDirection: 'row', marginBottom: Platform.OS == 'ios' ? 5 : null }}>
-                                                <CheckBox
-                                                    style={{ marginTop: Platform.OS == 'ios' ? 7 : 13 }}
-                                                    isChecked={note.isChecked == 0 ? false : true}
-                                                    onClick={() => this.checkBoxChanged(index, note.isChecked == 0 ? false : true)}
-                                                />
-                                                <TextInput key={index}
-                                                    placeholder='Note'
-                                                    style={[styles.generalFontSize, { left: Platform.OS == 'ios' ? 10 : null, textDecorationLine: note.isChecked == 0 ? 'none' : 'line-through', textDecorationStyle: 'solid', width: '90%' }]}
-                                                    onChangeText={(txt) => this.changeNote(index, txt)}
-                                                    multiline={true}
-                                                    autoFocus={true}
-                                                    blurOnSubmit={true}>
-                                                    {note.note}
-                                                </TextInput>
-                                            </View>
-                                        )
-                                    }
-                                })
-                            }
-                            {RenderAnimatedView}
-                            {this.state.note.hasCheckList == 1 ?
-                                <TouchableOpacity onPress={this.AddNewView}>
-                                    <Text style={styles.generalFontSize}> + List item </Text>
-                                </TouchableOpacity>
-                                : null}
-                        </View>
-                {/* </KeyboardAvoidingView> */}
+                                multiline={true}
+                            /> :
+                            this.state.note.checkList.map((note, index) => {
+                                { tempCheckValues[index] = false }
+                                if (note) {
+                                    return (
+                                        <View style={{ flexDirection: 'row', marginBottom: Platform.OS == 'ios' ? 5 : null }}>
+                                            <CheckBox
+                                                style={{ marginTop: Platform.OS == 'ios' ? 7 : 13 }}
+                                                isChecked={note.isChecked == 0 ? false : true}
+                                                onClick={() => this.checkBoxChanged(index, note.isChecked == 0 ? false : true)}
+                                            />
+                                            <TextInput key={index}
+                                                placeholder='Note'
+                                                style={[styles.generalFontSize, { left: Platform.OS == 'ios' ? 10 : null, textDecorationLine: note.isChecked == 0 ? 'none' : 'line-through', textDecorationStyle: 'solid', width: '90%' }]}
+                                                onChangeText={(txt) => this.changeNote(index, txt)}
+                                                multiline={true}
+                                                autoFocus={true}
+                                                blurOnSubmit={true}>
+                                                {note.note}
+                                            </TextInput>
+                                        </View>
+                                    )
+                                }
+                            })
+                        }
+                        {RenderAnimatedView}
+                        {this.state.note.hasCheckList == 1 ?
+                            <TouchableOpacity onPress={this.AddNewView}>
+                                <Text style={styles.generalFontSize}> + List item </Text>
+                            </TouchableOpacity>
+                            : null}
+                    </View>
+                    {/* </KeyboardAvoidingView> */}
                 </KeyboardAwareScrollView>
                 <View style={{ width: '100%', backgroundColor: 'white', elevation: 30, height: 40, bottom: 0 }}>
                     <TouchableOpacity
