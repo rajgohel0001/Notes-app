@@ -17,13 +17,6 @@ let tempCheckValuesSecond = [];
 let mainArray = [];
 let checkLineThrough = [];
 
-setScrollHeight = (width, height) => this.setState({ scrollHeight: height });
-const DismissKeyboard = ({ children }) => (
-    <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
-        {children}
-    </TouchableWithoutFeedback>
-);
-
 export default class UpdateNote extends Component {
     constructor(props) {
         super(props);
@@ -78,6 +71,12 @@ export default class UpdateNote extends Component {
         });
     }
 
+    /**
+     * 
+     * @param {*} index 
+     * @param {*} detail 
+     * update old checklist
+     */
     changeNote(index, detail) {
         console.log(index, detail);
         const obj = {
@@ -85,16 +84,16 @@ export default class UpdateNote extends Component {
             isChecked: 0
         }
         console.log('array object', obj);
-        // array.push(obj);
         array[index] = obj;
         console.log('array:', array);
-        // this.setState({
-        //     checklistArr: [...this.state.checklistArr, obj]
-        // })
-        // console.log("arrrrrr=========>",arr,this.state.checklistArr)
-        // console.log("state=========>", this.state.checklistArr)
     }
 
+    /**
+     * 
+     * @param {*} index 
+     * @param {*} detail 
+     * update new checklist
+     */
     changeNoteSecondArray(index, detail) {
         console.log('Index and detail-=-=', index, detail);
         const obj = {
@@ -244,24 +243,29 @@ export default class UpdateNote extends Component {
         console.log('note in updateNote:', this.state.note);
         mainArray = array.concat(arraySecond);
         console.log('mainArray:', mainArray);
-        let object = { ...this.state.note };
-        console.log('object:', object);
-        if (!object.detail.length) {
-            object.checkList = (JSON.stringify(mainArray)).toString();
-        }
-        console.log('after parsing the object:', object);
-        updateNote(object).then(({ result, message }) => {
-            // ToastAndroid.show(message, ToastAndroid.SHORT);
-            if (result) {
-                if (this.state.event) {
-                    this.state.event.emit('onUpdateNote');
-                }
+        if (!this.state.note.title && (!this.state.note.detail || (this.state.note.hasCheckList == 1 && !mainArray))) {
+            // alertService.alerAndToast("Empty note discarded");
+            this.deleteNote();
+        } else {
+            let object = { ...this.state.note };
+            console.log('object:', object);
+            if (!object.detail.length) {
+                object.checkList = (JSON.stringify(mainArray)).toString();
             }
-            array = [];
-            arraySecond = [];
-            mainArray = [];
-            // this.props.navigation.navigate('Home');
-        });
+            console.log('after parsing the object:', object);
+            updateNote(object).then(({ result, message }) => {
+                // ToastAndroid.show(message, ToastAndroid.SHORT);
+                if (result) {
+                    if (this.state.event) {
+                        this.state.event.emit('onUpdateNote');
+                    }
+                }
+                array = [];
+                arraySecond = [];
+                mainArray = [];
+                // this.props.navigation.navigate('Home');
+            });
+        }
     }
 
     render() {
@@ -280,7 +284,7 @@ export default class UpdateNote extends Component {
                     key={key}>
                     <View style={{ flex: 1, flexDirection: 'row', marginBottom: Platform.OS == 'ios' ? 5 : null }}>
                         <CheckBox
-                            style={{ marginTop: Platform.OS == 'ios' ? 7 : 13}}
+                            style={{ marginTop: Platform.OS == 'ios' ? 7 : 13 }}
                             // style={styles.checkboxView} android 
                             isChecked={this.state.checkBoxCheckedSecond[key]}
                             onClick={() => this.checkBoxChangedSecond(key, this.state.checkBoxCheckedSecond[key])}
@@ -322,58 +326,64 @@ export default class UpdateNote extends Component {
                         </TouchableOpacity>
                     </View>
                 </Header>
-                <View style={styles.container}>
-                    <KeyboardAwareScrollView>
-                        {/* <ScrollView> */}
-                        <TextInput
-                            style={[styles.input, styles.titleFontSize]}
-                            placeholder='Title'
-                            value={this.state.note.title}
-                            multiline={true}
-                            onChangeText={(text) => this.changeTxtTitle(text)}
-                            onSubmitEditing={this.updateNote}
-                            blurOnSubmit={true}
-                        />
-                        {this.state.note.hasCheckList === 0 ? <TextInput
-                            style={[styles.input, styles.generalFontSize, {justifyContent: 'center'}]}
-                            placeholder='Note'
-                            value={this.state.note.detail}
-                            onChangeText={(text) => this.changeTxt(text)}
-                            onSubmitEditing={this.updateNote}
-                            multiline={true}
-                        /> :
-                            this.state.note.checkList.map((note, index) => {
-                                { tempCheckValues[index] = false }
-                                if (note) {
-                                    return (
-                                        <View style={{ flexDirection: 'row', marginBottom: Platform.OS == 'ios' ? 5 : null }}>
-                                            <CheckBox
-                                                style={{ marginTop: Platform.OS == 'ios' ? 7 : 13 }}
-                                                isChecked={note.isChecked == 0 ? false : true}
-                                                onClick={() => this.checkBoxChanged(index, note.isChecked == 0 ? false : true)}
-                                            />
-                                            <TextInput key={index}
-                                                placeholder='Note'
-                                                style={[styles.generalFontSize, { left: Platform.OS == 'ios' ? 10 : null, textDecorationLine: note.isChecked == 0 ? 'none' : 'line-through', textDecorationStyle: 'solid', width: '90%' }]}
-                                                onChangeText={(txt) => this.changeNote(index, txt)}
-                                                multiline={true}
-                                                autoFocus={true}
-                                                blurOnSubmit={true}>
-                                                {note.note}
-                                            </TextInput>
-                                        </View>
-                                    )
-                                }
-                            })
-                        }
-                        {RenderAnimatedView}
-                        {this.state.note.hasCheckList == 1 ?
-                            <TouchableOpacity onPress={this.AddNewView}>
-                                <Text style={styles.generalFontSize}> + List item </Text>
-                            </TouchableOpacity>
-                            : null}
-                    </KeyboardAwareScrollView>
-                </View>
+                <KeyboardAwareScrollView
+                    innerRef={ref => {
+                        this.scroll = ref
+                    }}>
+                {/* <KeyboardAvoidingView behavior='padding' style={{ flex: 1 }}> */}
+                        <View style={styles.container}>
+                            <TextInput
+                                style={[styles.input, styles.titleFontSize]}
+                                placeholder='Title'
+                                value={this.state.note.title}
+                                multiline={true}
+                                onChangeText={(text) => this.changeTxtTitle(text)}
+                                // onSubmitEditing={this.updateNote}
+                                blurOnSubmit={true}
+                            />
+                            {this.state.note.hasCheckList === 0 ?
+                                <TextInput
+                                    style={[styles.input, styles.generalFontSize, { justifyContent: 'center' }]}
+                                    placeholder='Note'
+                                    autoFocus={true}
+                                    value={this.state.note.detail}
+                                    onChangeText={(text) => this.changeTxt(text)}
+                                    // onSubmitEditing={this.updateNote}
+                                    multiline={true}
+                                /> :
+                                this.state.note.checkList.map((note, index) => {
+                                    { tempCheckValues[index] = false }
+                                    if (note) {
+                                        return (
+                                            <View style={{ flexDirection: 'row', marginBottom: Platform.OS == 'ios' ? 5 : null }}>
+                                                <CheckBox
+                                                    style={{ marginTop: Platform.OS == 'ios' ? 7 : 13 }}
+                                                    isChecked={note.isChecked == 0 ? false : true}
+                                                    onClick={() => this.checkBoxChanged(index, note.isChecked == 0 ? false : true)}
+                                                />
+                                                <TextInput key={index}
+                                                    placeholder='Note'
+                                                    style={[styles.generalFontSize, { left: Platform.OS == 'ios' ? 10 : null, textDecorationLine: note.isChecked == 0 ? 'none' : 'line-through', textDecorationStyle: 'solid', width: '90%' }]}
+                                                    onChangeText={(txt) => this.changeNote(index, txt)}
+                                                    multiline={true}
+                                                    autoFocus={true}
+                                                    blurOnSubmit={true}>
+                                                    {note.note}
+                                                </TextInput>
+                                            </View>
+                                        )
+                                    }
+                                })
+                            }
+                            {RenderAnimatedView}
+                            {this.state.note.hasCheckList == 1 ?
+                                <TouchableOpacity onPress={this.AddNewView}>
+                                    <Text style={styles.generalFontSize}> + List item </Text>
+                                </TouchableOpacity>
+                                : null}
+                        </View>
+                {/* </KeyboardAvoidingView> */}
+                </KeyboardAwareScrollView>
                 <View style={{ width: '100%', backgroundColor: 'white', elevation: 30, height: 40, bottom: 0 }}>
                     <TouchableOpacity
                         onPress={() => { this.props.navigation.navigate('AddNote', { event: this.event }) }}
@@ -420,8 +430,11 @@ const styles = StyleSheet.create({
         flex: 1,
         flexDirection: 'column',
         backgroundColor: 'white',
-        padding: 20,
-        height: 'auto',
+        padding: Platform.OS == 'ios' ? null : 20,
+        paddingBottom: Platform.OS == 'ios' ? 20 : null,
+        paddingRight: Platform.OS == 'ios' ? 20 : null,
+        paddingLeft: Platform.OS == 'ios' ? 20 : null,
+        height: 'auto'
     },
     generalFontSize: {
         fontSize: 20
@@ -448,7 +461,8 @@ const styles = StyleSheet.create({
         backgroundColor: "#ffffff",
         height: 50,
         borderBottomColor: Platform.OS == 'ios' ? null : '#000',
-        borderBottomWidth: Platform.OS == 'ios' ? null : 1
+        borderBottomWidth: Platform.OS == 'ios' ? null : 1,
+        marginTop: Platform.OS == 'ios' ? 20 : null
     },
     iconButton: {
         height: 50,

@@ -63,7 +63,7 @@ class NoteView extends Component {
         if (this.state.note.item.checkList && this.state.note.item.checkList.length != 0) {
             return (
                 this.state.note.item.checkList.map((note, index) => {
-                    if (note && index < 6) {
+                    if (note && Platform.OS == 'ios' ? index < 5 : index < 6) {
                         return (
                             <View key={index} style={{ flexDirection: 'row' }}
                                 onLayout={(event) => {
@@ -120,14 +120,14 @@ class NoteView extends Component {
                             this.setState({ height: height })
                         }}>
                         <View style={{ flexDirection: 'column' }}>
-                            {this.state.note.item.title ? <Text style={[styles.generalFontSize, { marginBottom: Platform.OS === 'ios' ? 10 : null }]}>{this.state.note.item.title}</Text> : null}
+                            {this.state.note.item.title ? <Text numberOfLines={1} style={[styles.generalFontSize, { marginBottom: Platform.OS === 'ios' ? 10 : null }]}>{this.state.note.item.title}</Text> : null}
                             {this.state.note.item.hasCheckList == 0 ?
                                 <View style={{ flexDirection: 'row' }}><Text numberOfLines={6} style={[styles.generaldetail, { justifyContent: 'center', flex: 1 }]}>{this.state.note.item.detail}</Text></View> : null
                             }
                             <View>{this.renderNote()}</View>
                         </View>
-                        {this.state.height >= 200 ?
-                            <View style={{ height: 20 }}><Text style={{ fontSize: 10, fontWeight: 'bold', color: '#000', marginLeft: 7 }}>...</Text></View> : null}
+                        {this.state.height >= (Platform.OS == 'ios' ? 160 : 200) ?
+                            <View style={{ height: 20 }}><Text style={{ fontSize: Platform.OS == 'ios' ? 15 : 10, fontWeight: 'bold', color: '#000', marginLeft: Platform.OS == 'ios' ? 5 : 7 }}>...</Text></View> : null}
                     </View>
                 </Ripple>
                 <View>

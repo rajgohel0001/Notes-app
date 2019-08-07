@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { StyleSheet, View, TextInput, ScrollView, TouchableOpacity, Keyboard, BackHandler, Platform } from 'react-native';
+import { StyleSheet, View, TextInput, ScrollView, TouchableOpacity, SafeAreaView, Keyboard, BackHandler, Platform } from 'react-native';
 import { Header } from "native-base";
 import Note from '../models/Note';
 import Icon from 'react-native-vector-icons/MaterialIcons';
@@ -93,28 +93,30 @@ export default class AddNote extends Component {
                         </TouchableOpacity>
                     </View>
                 </Header>
-                <View style={styles.container}>
-                    <ScrollView style={{ marginTop: Platform.OS == 'ios' ? 10 : null }}>
-                        <TextInput
-                            style={[styles.input, styles.titleFontSize]}
-                            onChangeText={(text) => this.changeTxtTitle(text)}
-                            placeholder={'Title'}
-                            multiline={true}
-                            onSubmitEditing={this.createNote}
-                            blurOnSubmit={true}
-                        />
-                        <TextInput
-                            style={[styles.input, styles.generalFontSize]}
-                            onChangeText={(text) => this.changeTxt(text)}
-                            placeholder={'Note'}
-                            multiline={true}
-                            // onSubmitEditing={this.createNote}
-                            autoFocus={true}
-                            multiline={true}
-                            blurOnSubmit={true}
-                        />
-                    </ScrollView>
-                </View>
+                <SafeAreaView>
+                    <View style={styles.container}>
+                        <ScrollView scrollToOverflowEnabled={true} style={{ marginTop: Platform.OS == 'ios' ? 10 : null }}>
+                            <TextInput
+                                style={[styles.input, styles.titleFontSize]}
+                                onChangeText={(text) => this.changeTxtTitle(text)}
+                                placeholder={'Title'}
+                                multiline={true}
+                                onSubmitEditing={this.createNote}
+                                blurOnSubmit={true}
+                            />
+                            <TextInput
+                                style={[styles.input, styles.generalFontSize]}
+                                onChangeText={(text) => this.changeTxt(text)}
+                                placeholder={'Note'}
+                                multiline={true}
+                                // onSubmitEditing={this.createNote}
+                                autoFocus={true}
+                                multiline={true}
+                                blurOnSubmit={true}
+                            />
+                        </ScrollView>
+                    </View>
+                </SafeAreaView>
             </>
         )
     }
@@ -123,14 +125,18 @@ export default class AddNote extends Component {
 const styles = StyleSheet.create({
     container: {
         backgroundColor: 'white',
-        padding: 20,
+        padding: Platform.OS == 'ios' ? null : 20,
+        paddingBottom: Platform.OS == 'ios' ? 20 : null,
+        paddingRight: Platform.OS == 'ios' ? 20 : null,
+        paddingLeft: Platform.OS == 'ios' ? 20 : null,
         height: 'auto',
     },
     header: {
         backgroundColor: "#ffffff",
         height: 50,
         borderBottomColor: Platform.OS == 'ios' ? null : '#000',
-        borderBottomWidth: Platform.OS == 'ios' ? null : 1
+        borderBottomWidth: Platform.OS == 'ios' ? null : 1,
+        marginTop: Platform.OS == 'ios' ? 20 : null
     },
     iconButton: {
         height: 50,
