@@ -61,14 +61,6 @@ export default class CheckList extends Component {
      * add note
      */
     createNote = () => {
-        // for (let i = 0; i < array.length; i++) {
-        //     console.log("array of i==========>",i,array[i])
-        //     if (array[i] == undefined) {
-        //         array.splice(i, 1);
-        //     }
-        //     console.log("spliced array in looppp============>",array)
-        // }
-        console.log("spliced array============>",array);
         let filteredArray = array.filter((el) => {
             return el != null;
         })
@@ -177,11 +169,11 @@ export default class CheckList extends Component {
     }
 
     render() {
-        console.log('view array:', this.state.ViewArray);
-        console.log('array index:', this.ArrayValueIndex);
-        console.log('note:', this.state.note);
-        console.log('hasCheckList:', this.props.navigation.state.params.hasCheckList);
-        console.log('array:', array);
+        // console.log('view array:', this.state.ViewArray);
+        // console.log('array index:', this.ArrayValueIndex);
+        // console.log('note:', this.state.note);
+        // console.log('hasCheckList:', this.props.navigation.state.params.hasCheckList);
+        // console.log('array:', array);
 
         /**
          * render animated view

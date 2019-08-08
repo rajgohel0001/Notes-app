@@ -137,7 +137,7 @@ export default class UpdateNote extends Component {
      * 
      * @param {*} id 
      * @param {*} value 
-     * change animated view checkbox 
+     * change new animated checkbox view
      */
     checkBoxChangedSecond(id, value) {
         if (arraySecond[id] != null) {

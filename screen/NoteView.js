@@ -4,7 +4,6 @@ import { withNavigation } from 'react-navigation';
 import Ripple from 'react-native-material-ripple';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import { deleteNote } from '../controllers/NoteController';
-import alertService from '../service/alertService';
 import CheckBox from 'react-native-check-box';
 import RBSheet from "react-native-raw-bottom-sheet";
 const width = Dimensions.get('window').width;
@@ -76,7 +75,6 @@ class NoteView extends Component {
                                         isChecked={note.isChecked == 0 ? false : true}
                                     />
                                 </View>
-                                {/* <View style={{ flex: 2 }}></View> */}
                                 <View style={{ marginLeft: 5, marginRight: Platform.OS === 'ios' ? 20 : null }}>
                                     <Text numberOfLines={1} style={[styles.generaldetail, {
                                         marginTop: Platform.OS == 'ios' ? 5 : null, textDecorationLine: note.isChecked == 0 ? 'none' : 'line-through',
@@ -104,7 +102,7 @@ class NoteView extends Component {
     }
 
     render() {
-        console.log('state note====', this.state.note);
+        // console.log('state note====', this.state.note);
         // console.log('height', this.state.height);
         if (!this.state.note)
             return <Text style={styles.generalFontSize}>No note found!</Text>

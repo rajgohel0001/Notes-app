@@ -16,7 +16,7 @@ if (Platform.OS === 'ios') {
  * create note 
  */
 export const createNote = (note) => {
-    console.log('hey note in contrller: ', note);
+    // console.log('hey note in contrller: ', note);
     return new Promise((resolve, reject) => {
         let msg = new Message();
         if (!note) {
@@ -26,9 +26,9 @@ export const createNote = (note) => {
         }
         sqlite.transaction((tx) => {
             tx.executeSql('INSERT INTO Note(title, detail, hasCheckList, checkList) VALUES (?,?,?,?)', [note.title, note.detail, note.hasCheckList, note.checkList], (tx, results) => {
-                console.log('YOU INSDIE', results);
+                // console.log('YOU INSDIE', results);
                 if (results.rowsAffected) {
-                    console.log('hello its saved');
+                    // console.log('hello its saved');
                     msg.result = true;
                     msg.message = 'Create new note successfully!';
                 } else {
@@ -38,7 +38,7 @@ export const createNote = (note) => {
                 }
                 resolve({ result: msg.result, message: msg.message });
             }, (error) => {
-                console.log('error: ', error);
+                // console.log('error: ', error);
                 msg.result = false;
                 msg.message = `${error.message}`;
                 resolve({ result: msg.result, message: msg.message });
@@ -61,18 +61,18 @@ export const getAllNotes = () => {
                 try {
                     for (let i = 0; i < results.rows.length; i++) {
                         let item = results.rows.item(i);
-                        console.log('result item',results.rows.item(i));
+                        // console.log('result item',results.rows.item(i));
                         if (item.checkList) {
-                            console.log('item.checkList',item.checkList);
+                            // console.log('item.checkList',item.checkList);
                             const itemCheckList = JSON.parse((item.checkList));
-                            console.log('itemCheckList[i]', itemCheckList[i]);
+                            // console.log('itemCheckList[i]', itemCheckList[i]);
                             item.checkList = itemCheckList
-                            console.log('item.checkList after', item.checkList);
+                            // console.log('item.checkList after', item.checkList);
                         }
                         // console.log('item====1', typeof itemCheckList, JSON.parse(JSON.stringify(itemCheckList)));
                         // console.log('222: ', JSON.parse(item.checkList));
                         // console.log('item====2', JSON.parse(item.checkList), typeof (JSON.parse(JSON.stringify(item.checkList))));
-                        console.log('item: full: ', item);
+                        // console.log('item: full: ', item);
                         let note = new Note(item.noteId, item.title, item.detail, item.hasCheckList, item.checkList);
                         msg.result.push(note);
                     }
@@ -128,7 +128,7 @@ export const deleteNote = (note) => {
  * update note 
  */
 export const updateNote = (note) => {
-    console.log('note in controller: ', note)
+    // console.log('note in controller: ', note)
     return new Promise((resolve, reject) => {
         let msg = new Message();
         if (!note) {

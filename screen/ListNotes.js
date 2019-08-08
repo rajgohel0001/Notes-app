@@ -11,10 +11,6 @@ export default class ListNotes extends Component{
             notes: this.props.notes,
         };
     }
-
-    // componentWillReceiveProps(nextProps) {
-    //     this.setState({ notes: nextProps.notes });
-    // }
     
     static getDerivedStateFromProps(nextProps, prevState) {
         return{ 

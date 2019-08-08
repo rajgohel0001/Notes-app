@@ -23,20 +23,12 @@ export default class Home extends Component {
         this.event.addListener('onDeleteNote', () => this.initListNotes());
     }
 
-    // componentWillMount() {
-    //     this.initListNotes();
-    //     this.event.addListener('onCreateNote', () => this.initListNotes());
-    //     this.event.addListener('onUpdateNote', () => this.initListNotes());
-    //     this.event.addListener('onDeleteNote', () => this.initListNotes());
-    // }
-
     componentWillUnmount() {
         this.event.removeAllListeners();
     }
 
     initListNotes = () => {
         getAllNotes().then((respnose) => {
-            // getAllNotes().then(({ result, message }) => this.setState({ notes: result }));
             this.setState({ notes: respnose.result });
             // console.log('respnose: ', respnose);
         }).catch((error) => {
@@ -45,7 +37,7 @@ export default class Home extends Component {
     }
 
     render() {
-        console.log('notes: ', this.state.notes);
+        // console.log('notes: ', this.state.notes);
         return (
             <>
                 {!this.state.notes.length ?
@@ -93,17 +85,12 @@ const styles = StyleSheet.create({
         right: 15,
     },
     navbar: {
-        // alignSelf: 'flex-end',
         alignItems: 'center',
-        // justifyContent: 'center',
-        // position: 'absolute',
         bottom: 20,
-        // height: 60,
     },
     container: {
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
-        // backgroundColor: '#F5FCFF'
     }
 });
