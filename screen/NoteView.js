@@ -59,11 +59,12 @@ class NoteView extends Component {
      * render checklist view
      */
     renderNote = () => {
-        console.log('checklistttt============>', typeof this.state.note.item.checkList);
+        console.log('checklistttt============>',  this.state.note.item.checkList);
         if (this.state.note.item.checkList && this.state.note.item.checkList.length != 0) {
             return (
                 this.state.note.item.checkList.map((note, index) => {
-                    if (note && Platform.OS == 'ios' ? index < 5 : index < 6) {
+                    console.log('note in checklist===>>>>>>>.', note);
+                    if (note != 'null' && Platform.OS == 'ios' ? index < 5 : index < 6) {
                         return (
                             <View key={index} style={{ flexDirection: 'row' }}
                                 onLayout={(event) => {

@@ -61,10 +61,13 @@ export const getAllNotes = () => {
                 try {
                     for (let i = 0; i < results.rows.length; i++) {
                         let item = results.rows.item(i);
+                        console.log('result item',results.rows.item(i));
                         if (item.checkList) {
+                            console.log('item.checkList',item.checkList);
                             const itemCheckList = JSON.parse((item.checkList));
-                            console.log('itemCheckList: ', itemCheckList)
+                            console.log('itemCheckList[i]', itemCheckList[i]);
                             item.checkList = itemCheckList
+                            console.log('item.checkList after', item.checkList);
                         }
                         // console.log('item====1', typeof itemCheckList, JSON.parse(JSON.stringify(itemCheckList)));
                         // console.log('222: ', JSON.parse(item.checkList));

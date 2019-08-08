@@ -273,11 +273,15 @@ export default class UpdateNote extends Component {
                 this.deleteNote();
             } else {
                 mainArray = array.concat(arraySecond);
+                let filteredArray = mainArray.filter((el) => {
+                    return el != null;
+                })
+                console.log('filteredArray in update', filteredArray);
                 console.log('mainArray:', mainArray, this.state.note.hasCheckList);
                 let object = { ...this.state.note };
                 console.log('object:', object);
                 if (!object.detail.length) {
-                    object.checkList = (JSON.stringify(mainArray)).toString();
+                    object.checkList = (JSON.stringify(filteredArray)).toString();
                 }
                 console.log('after parsing the object:', object);
                 updateNote(object).then(({ result, message }) => {

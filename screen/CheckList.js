@@ -61,7 +61,19 @@ export default class CheckList extends Component {
      * add note
      */
     createNote = () => {
-        this.state.note.checkList = (JSON.stringify(array)).toString();
+        // for (let i = 0; i < array.length; i++) {
+        //     console.log("array of i==========>",i,array[i])
+        //     if (array[i] == undefined) {
+        //         array.splice(i, 1);
+        //     }
+        //     console.log("spliced array in looppp============>",array)
+        // }
+        console.log("spliced array============>",array);
+        let filteredArray = array.filter((el) => {
+            return el != null;
+        })
+        console.log('filteredArray', filteredArray);
+        this.state.note.checkList = (JSON.stringify(filteredArray)).toString();
         console.log("this.state.note: ", this.state.note)
         console.log('cond: ', !this.state.note.title, this.state.note.checkList != null, this.state.note.checkList.length != 0);
         console.log('checklist lebght:', this.state.note.checkList.length);
@@ -116,8 +128,8 @@ export default class CheckList extends Component {
      * save note text detail
      */
     changeNote(index, detail) {
-        console.log('detail length: ', detail.length);
-        if(detail){
+        console.log('detail length: ', detail.length, index);
+        if (detail) {
             const obj = {
                 note: detail,
                 isChecked: 0
@@ -125,9 +137,9 @@ export default class CheckList extends Component {
             console.log('obj:', obj);
             array[index] = obj;
         } else {
-            array.splice(index,1);
+            array.splice(index, 1);
         }
-        console.log('array:', array);
+        console.log('array:', array[index], array);
     }
 
     /**
